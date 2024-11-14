@@ -23,6 +23,21 @@ use Yii;
  */
 class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+
+        if ($this->isNewRecord) {
+            $this->password = Yii::$app->security->generatePasswordHash($this->password);
+            $this->auth_key = Yii::$app->security->generateRandomString();
+            $this->roles_id = Roles::getRoles('author');
+        }
+        
+        return true;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -37,7 +52,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function rules()
     {
         return [
-            [['name', 'surname', 'login', 'email', 'password', 'phone', 'auth_key', 'roles_id'], 'required'],
+            [['name', 'surname', 'login', 'email', 'password', 'phone'], 'required'],
             [['roles_id'], 'integer'],
             [['registered_at'], 'safe'],
             [['name', 'surname', 'patronymic', 'login', 'email', 'password', 'auth_key'], 'string', 'max' => 255],
@@ -45,6 +60,11 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             [['login'], 'unique'],
             [['email'], 'unique'],
             [['roles_id'], 'exist', 'skipOnError' => true, 'targetClass' => Roles::class, 'targetAttribute' => ['roles_id' => 'id']],
+            [['name', 'surname', 'login', 'email', 'password', 'auth_key'], 'trim'],
+            ['patronymic', 'default', 'value' => null],
+            ['patronymic', 'filter', 'filter' => function($value) {
+                return is_null($value) ? $value : trim($value);
+            }]
         ];
     }
 
