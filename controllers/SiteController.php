@@ -77,10 +77,12 @@ class SiteController extends Controller
         }
 
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+        if ($this->request->isAjax) {
+            if ($model->load(Yii::$app->request->post()) && $model->login()) {
+                return $this->goBack()->send();
+            }
         }
-
+        
         $model->password = '';
         return $this->render('login', [
             'model' => $model,

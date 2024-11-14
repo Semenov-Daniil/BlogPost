@@ -44,7 +44,7 @@ class RegisterForm extends Model
         ];
     }
 
-      /**
+    /**
      * {@inheritdoc}
      */
     public function attributeLabels()
