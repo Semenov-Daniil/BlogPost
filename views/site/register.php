@@ -44,6 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($model, 'login')->textInput() ?>
                 <?= $form->field($model, 'password')->passwordInput() ?>
                 <?= $form->field($model, 'password_repeat')->passwordInput() ?>
+                <?= $form->field($model, 'uploadFile')->fileInput() ?>
                 <?= $form->field($model, 'rules')->checkbox() ?>
 
                 <div class="form-group">

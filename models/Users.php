@@ -19,7 +19,8 @@ use Yii;
  * @property int $roles_id
  * @property string $registered_at
  *
- * @property Roles $roles
+ * @property Avatars $avatar
+ * @property Roles $role
  */
 class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
@@ -89,11 +90,21 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
+     * Gets query for [[Avatars]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAvatar()
+    {
+        return $this->hasOne(Avatars::class, ['users_id' => 'id']);
+    }
+
+    /**
      * Gets query for [[Roles]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getRoles()
+    public function getRole()
     {
         return $this->hasOne(Roles::class, ['id' => 'roles_id']);
     }

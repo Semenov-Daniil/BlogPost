@@ -10,8 +10,9 @@ $config = [
     'bootstrap' => ['log'],
     'language' => 'ru-RU',
     'aliases' => [
-        '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
+        '@bower'   => '@vendor/bower-asset',
+        '@npm'     => '@vendor/npm-asset',
+        '@avatars' => 'uploads/users',
     ],
     'components' => [
         'request' => [

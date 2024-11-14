@@ -19,7 +19,8 @@ class RegisterForm extends Model
     public string $password_repeat = 'pa55WORD';
     public string $phone = '+7(999)-999-99-99';
     public bool $rules = false;
-    public object|null $uploadFile = null;
+    public $uploadFile = null;
+    public string $urlFile = '';
 
     /**
      * @return array the validation rules.
@@ -70,16 +71,31 @@ class RegisterForm extends Model
     public function register()
     {
         if ($this->validate()) {
-            $user = new Users();
+            if (is_null($this->uploadFile) || $this->upload()) {
+                $user = new Users();
 
-            $user->attributes = $this->attributes;
+                $user->attributes = $this->attributes;
+    
+                if ($user->save()) {
+                    if ($this->urlFile) {
+                        $avatar = new Avatars();
+                        $avatar->url = $this->urlFile;
+                        $avatar->users_id = $user->id;
+                        $avatar->save(false);
+                    }
 
-            if ($user->save()) {
-                return Yii::$app->user->login($user);
+                    return Yii::$app->user->login($user);
+                }
+    
+                $this->addErrors($user->errors);
             }
-
-            $this->addErrors($user->errors);
         }
         return false;
+    }
+
+    public function upload()
+    {
+        $this->urlFile = Yii::getAlias('@avatars') . '/' . Yii::$app->security->generateRandomString() . '_' . time() . '.' . $this->uploadFile->extension;
+        return $this->uploadFile->saveAs($this->urlFile);
     }
 }

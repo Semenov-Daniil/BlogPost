@@ -10,6 +10,8 @@ use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\RegisterForm;
+use yii\helpers\VarDumper;
+use yii\web\UploadedFile;
 
 class SiteController extends Controller
 {
@@ -102,8 +104,12 @@ class SiteController extends Controller
 
         $model = new RegisterForm();
         if ($this->request->isAjax) {
-            if ($model->load(Yii::$app->request->post()) && $model->register()) {
-                return $this->goBack()->send();
+            if ($model->load(Yii::$app->request->post())) {
+                $model->uploadFile = UploadedFile::getInstance($model, 'uploadFile');
+
+                if ($model->register()) {
+                    return $this->goBack()->send();
+                }
             }
         }
 
