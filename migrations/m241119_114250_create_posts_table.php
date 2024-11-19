@@ -19,7 +19,7 @@ class m241119_114250_create_posts_table extends Migration
             'id' => $this->primaryKey(),
             'title' => $this->string(255)->notNull(),
             'preview' => $this->string(255)->notNull(),
-            'text' => $this->string()->notNull(),
+            'text' => $this->text()->notNull(),
             'users_id' => $this->integer()->notNull(),
             'themes_id' => $this->integer()->notNull(),
             'statuses_id' => $this->integer()->notNull(),

@@ -34,7 +34,8 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     NavBar::begin([
         'brandLabel' => Yii::$app->name,
         'brandUrl' => Yii::$app->homeUrl,
-        'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top']
+        'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top'],
+        'collapseOptions' => ['class' => 'test'],
     ]);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav'],
@@ -53,7 +54,10 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
                         ['class' => 'nav-link btn btn-link logout']
                     )
                     . Html::endForm()
-                    . '</li>'
+                    . '</li>',
+            !Yii::$app->user->isGuest && Yii::$app->user->identity->isAuthor
+                ? '<li class="nav-item">' . Html::a('Создать пост', ['/post/create'], ['class' => 'btn btn-outline-success']) . '</li>'
+                : '',
         ]
     ]);
     NavBar::end();

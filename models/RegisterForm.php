@@ -81,7 +81,7 @@ class RegisterForm extends Model
                         $avatar = new Avatars();
                         $avatar->url = $this->urlFile;
                         $avatar->users_id = $user->id;
-                        $avatar->save(false);
+                        $avatar->save();
                     }
 
                     return Yii::$app->user->login($user);

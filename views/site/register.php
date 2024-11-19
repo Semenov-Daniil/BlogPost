@@ -32,6 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
                     ],
                     'options' => [
+                        ['enctype' => 'multipart/form-data'],
                         'data' => ['pjax' => true]
                     ]
                 ]); ?>
@@ -55,8 +56,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?php ActiveForm::end(); ?>
             <?php Pjax::end(); ?>
-
-            <div class="my-test"></div>
 
         </div>
     </div>

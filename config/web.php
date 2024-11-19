@@ -13,6 +13,7 @@ $config = [
         '@bower'   => '@vendor/bower-asset',
         '@npm'     => '@vendor/npm-asset',
         '@avatars' => 'img/avatars',
+        '@posts' => 'img/posts',
     ],
     'components' => [
         'request' => [
@@ -53,6 +54,16 @@ $config = [
             'rules' => [
             ],
         ],
+
+        'formatter' => [
+            'class' => 'yii\i18n\Formatter',
+            'defaultTimeZone' => 'Etc/GMT-3', // Указываем часовой пояс базы
+            'timeZone' => 'Europe/Moscow',    // Часовой пояс для отображения
+            'datetimeFormat' => 'dd.MM.yyyy HH:mm',
+            'timeFormat' => 'HH:mm',
+            'locale' => 'ru-RU',
+            'language' => 'ru-RU',
+       ],
         
     ],
     'params' => $params,

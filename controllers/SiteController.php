@@ -9,6 +9,7 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\Posts;
 use app\models\RegisterForm;
 use yii\helpers\VarDumper;
 use yii\web\UploadedFile;
@@ -64,7 +65,11 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $posts = Posts::getLastPosts(10);
+
+        return $this->render('index', [
+            'posts' => $posts
+        ]);
     }
 
     /**

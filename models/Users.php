@@ -116,6 +116,16 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
+     * Gets query for [[Posts]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPosts()
+    {
+        return $this->hasMany(Posts::class, ['users_id' => 'id']);
+    }
+
+    /**
      * Gets query for [[Roles]].
      *
      * @return \yii\db\ActiveQuery
@@ -192,5 +202,25 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function validatePassword(string $password): bool
     {
         return Yii::$app->getSecurity()->validatePassword($password, $this->password);
+    }
+
+    /**
+     * Gets whether the user is the author.
+     *
+     * @return bool
+     */
+    public function getIsAuthor(): bool
+    {
+        return $this->roles_id == Roles::getRoles('author');
+    }
+
+    /**
+     * Gets whether the user is the admin.
+     *
+     * @return bool
+     */
+    public function getIsAdmin(): bool
+    {
+        return $this->roles_id == Roles::getRoles('admin');
     }
 }
