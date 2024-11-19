@@ -51,7 +51,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php Pjax::end(); ?>
 
             <div style="color:#999;">
-                Вы можете фойти под <strong>admin-a/pa55WORD</strong> или <strong>user-u/pa55WORD</strong>.<br>
+                Вы можете фойти под <strong>admin/pa55WORD</strong> или <strong>user/pa55WORD</strong>.<br>
             </div>
 
         </div>

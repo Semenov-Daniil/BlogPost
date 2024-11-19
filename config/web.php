@@ -12,7 +12,7 @@ $config = [
     'aliases' => [
         '@bower'   => '@vendor/bower-asset',
         '@npm'     => '@vendor/npm-asset',
-        '@avatars' => 'uploads/users',
+        '@avatars' => 'img/avatars',
     ],
     'components' => [
         'request' => [

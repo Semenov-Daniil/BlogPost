@@ -3,6 +3,9 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "bp_users".
@@ -24,6 +27,19 @@ use Yii;
  */
 class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['registered_at'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+
     public function beforeSave($insert)
     {
         if (!parent::beforeSave($insert)) {

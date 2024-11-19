@@ -10,14 +10,14 @@ use yii\base\Model;
  */
 class RegisterForm extends Model
 {
-    public string $name = 'Иван';
-    public string $surname = 'Иванов';
+    public string $name = '';
+    public string $surname = '';
     public string|null $patronymic = '';
-    public string $login = 'user-u';
-    public string $email = 'user@user.ru';
-    public string $password = 'pa55WORD';
-    public string $password_repeat = 'pa55WORD';
-    public string $phone = '+7(999)-999-99-99';
+    public string $login = '';
+    public string $email = '';
+    public string $password = '';
+    public string $password_repeat = '';
+    public string $phone = '';
     public bool $rules = false;
     public $uploadFile = null;
     public string $urlFile = '';
@@ -95,6 +95,10 @@ class RegisterForm extends Model
 
     public function upload()
     {
+        if (!is_dir(Yii::getAlias('@avatars'))) {
+            mkdir(Yii::getAlias('@avatars'), 0755, true);
+        }
+
         $this->urlFile = Yii::getAlias('@avatars') . '/' . Yii::$app->security->generateRandomString() . '_' . time() . '.' . $this->uploadFile->extension;
         return $this->uploadFile->saveAs($this->urlFile);
     }
