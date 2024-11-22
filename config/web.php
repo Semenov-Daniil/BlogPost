@@ -64,6 +64,11 @@ $config = [
             'locale' => 'ru-RU',
             'language' => 'ru-RU',
        ],
+
+       'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+            'defaultRoles' => ['admin', 'author'],
+        ],
         
     ],
     'params' => $params,

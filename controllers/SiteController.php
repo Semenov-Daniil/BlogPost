@@ -144,4 +144,11 @@ class SiteController extends Controller
     {
         return $this->render('about');
     }
+
+    public function actionRbac()
+    {
+        $auth = Yii::$app->authManager;
+
+        var_dump($auth->getRole('admin'));
+    }
 }
