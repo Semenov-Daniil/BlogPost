@@ -28,7 +28,7 @@ use yii\widgets\Pjax;
             <div class="d-flex gap-2 flex-wrap">
                 <?= Html::a('Читать пост', ['/post/view', 'id' => $model->id], ['class' => 'btn btn-primary']); ?>
 
-                <?php if (Yii::$app->user->can('updatePost', ['post' => $model])): ?>
+                <?php if (Yii::$app->user->can('updateOwnPost', ['post' => $model])): ?>
                     <?= Html::a('Редактировать', ['/post/update', 'id' => $model->id], ['class' => 'btn btn-warning']); ?>
                 <?php endif; ?>
 

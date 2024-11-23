@@ -41,7 +41,7 @@ class PostController extends Controller
                         [
                             'actions' => ['update'],
                             'allow' => true,
-                            'roles' => ['updatePost'],
+                            'roles' => ['updateOwnPost'],
                             'roleParams' => function($rule) {
                                 return [
                                     'post' => $this->findModel(Yii::$app->request->get('id')),
@@ -167,6 +167,7 @@ class PostController extends Controller
 
         return $this->render('update', [
             'model' => $model,
+            'themes' => Themes::getThemes(),
         ]);
     }
 
@@ -179,7 +180,7 @@ class PostController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $this->findModel($id)->deletePost();
 
         return $this->goBack();
     }

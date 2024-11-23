@@ -23,7 +23,7 @@ use yii\helpers\VarDumper;
  * @property string $created_at
  * @property string $updated_at
  *
- * @property PostsImages[] $postsImages
+ * @property PostsImages $postImage
  * @property Statuses $statuses
  * @property Themes $themes
  * @property Users $users
@@ -128,9 +128,9 @@ class Posts extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getPostsImages()
+    public function getPostImage()
     {
-        return $this->hasMany(PostsImages::class, ['posts_id' => 'id']);
+        return $this->hasOne(PostsImages::class, ['posts_id' => 'id']);
     }
 
     /**
@@ -237,9 +237,17 @@ class Posts extends \yii\db\ActiveRecord
                     $this->save(false);
                     
                     if ($this->pathFile) {
-                        $image = PostsImages::findOne(['posts_id' => $this->id]) ?: new PostsImages();
+                        if ($image = PostsImages::findOne(['posts_id' => $this->id])) {
+                            if (file_exists($image->path_image)) {
+                                unlink($image->path_image);
+                            }
+                        } else {
+                            $image = new PostsImages();
+                            $image->posts_id = $this->id;
+                        }
+
                         $image->path_image = $this->pathFile;
-                        $image->posts_id = $this->id;
+                        
                         if (!$image->save()) {
                             $this->addErrors($image->errors);
                             throw new Exception("Couldn't save a new image");
@@ -297,7 +305,7 @@ class Posts extends \yii\db\ActiveRecord
             ])
             ->joinWith('users', false)
             ->joinWith('themes', false)
-            ->joinWith('postsImages', false)
+            ->joinWith('postImage', false)
             ->where(['statuses_id' => Statuses::getStatus('Одобрен')])
             ->limit($limit)
             ;
@@ -311,5 +319,14 @@ class Posts extends \yii\db\ActiveRecord
                 ]
             ],
         ]);
+    }
+
+    public function deletePost()
+    {
+        if ($this->postImage) {
+            $this->postImage->delete();
+        }
+
+        $this->delete();
     }
 }

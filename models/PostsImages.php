@@ -15,6 +15,19 @@ use Yii;
  */
 class PostsImages extends \yii\db\ActiveRecord
 {
+    public function beforeDelete()
+    {
+        if (!parent::beforeDelete()) {
+            return false;
+        }
+
+        if (file_exists($this->path_image)) {
+            unlink($this->path_image);
+        }
+
+        return true;
+    }
+
     /**
      * {@inheritdoc}
      */

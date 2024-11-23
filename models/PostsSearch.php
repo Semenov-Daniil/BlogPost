@@ -56,7 +56,7 @@ class PostsSearch extends Posts
             ])
             ->joinWith('users', false)
             ->joinWith('themes', false)
-            ->joinWith('postsImages', false)
+            ->joinWith('postImage', false)
             ->where(['statuses_id' => Statuses::getStatus('Одобрен')])
         ;
 

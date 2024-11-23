@@ -43,14 +43,18 @@ $this->registerJsFile('js/createPost.js', ['depends' => YiiAsset::class])
 
         <?= $form->field($model, 'themes_id')->dropDownList($themes, ['prompt' => 'Выберите тему', 'disabled' => $model->check]) ?>
 
-        <?= $form->field($model, 'check')->checkbox() ?>
+        <?= $form->field($model, 'check', ['options' => ['class' => 'py-1']])->checkbox(['data-bs-toggle' => "collapse", 'data-bs-target' => "#collapseThemeInput", 'aria-expanded' => "false", 'aria-controls' => "collapseThemeInput"]) ?>
 
-        <?= $form->field($model, 'theme')->textInput(['maxlength' => true, 'disabled' => !$model->check]) ?>
+        <div class="collapse" id="collapseThemeInput">
+            <?= $form->field($model, 'theme')->textInput(['maxlength' => true, 'disabled' => !$model->check]) ?>
+        </div>
 
         <?= $form->field($model, 'uploadFile')->fileInput() ?>
+
+        <?= $model->postImage?->path_image ? Html::img('/' . $model->postImage->path_image, ['style' => "height: 30rem;", 'class' => 'card-img-top rounded object-fit-cover mb-3']) : '' ?>
         
         <div class="form-group">
-            <?= Html::submitButton('Создать', ['class' => 'btn btn-success']) ?>
+            <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
         </div>
 
         <?php ActiveForm::end(); ?>
