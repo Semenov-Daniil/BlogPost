@@ -19,12 +19,12 @@ class m241114_134820_create_roles_rbac extends Migration
         $auth->add($rule);
 
         $author = $auth->createRole('author');
-        $author->description = 'Автор';
+        $author->description = 'Author';
         $author->ruleName = $rule->name;
         $auth->add($author);
         
         $admin = $auth->createRole('admin');
-        $admin->description = 'Администратор';
+        $admin->description = 'Admin';
         $admin->ruleName = $rule->name;
         $auth->add($admin);
     }

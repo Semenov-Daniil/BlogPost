@@ -41,7 +41,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($model, 'surname')->textInput() ?>
                 <?= $form->field($model, 'patronymic')->textInput() ?>
                 <?= $form->field($model, 'email')->textInput() ?>
-                <?= $form->field($model, 'phone')->textInput() ?>
+                <?= $form->field($model, 'phone')->widget(\yii\widgets\MaskedInput::class, [
+                    'mask' => '+7(999)-999-99-99',
+                ]) ?>   
                 <?= $form->field($model, 'login')->textInput() ?>
                 <?= $form->field($model, 'password')->passwordInput() ?>
                 <?= $form->field($model, 'password_repeat')->passwordInput() ?>

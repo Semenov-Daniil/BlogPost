@@ -16,6 +16,6 @@ $this->title = Yii::$app->name;
         'dataProvider' => $posts,
         'layout' => "{items}",
         'itemOptions' => ['class' => 'item mb-4'],
-        'itemView' => '/post/_post',
+        'itemView' => '_post',
     ]) ?>
 </div>

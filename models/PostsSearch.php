@@ -40,25 +40,47 @@ class PostsSearch extends Posts
      */
     public function search($params)
     {
-        $query = Posts::find();
-
-        // add conditions that should always apply here
+        $query = Posts::find()
+            ->select([
+                self::tableName() . '.id', 
+                self::tableName() . '.title', 
+                'preview', 
+                'text', 
+                Themes::tableName() . '.title as theme',
+                'users_id',
+                'login as author', 
+                'statuses_id',
+                'created_at',
+                'updated_at',
+                'path_image as pathFile'
+            ])
+            ->joinWith('users', false)
+            ->joinWith('themes', false)
+            ->joinWith('postsImages', false)
+            ->where(['statuses_id' => Statuses::getStatus('Одобрен')])
+        ;
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 10
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'created_at' => SORT_DESC,
+                ]
+            ],
         ]);
 
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            self::tableName() . '.id' => $this->id,
             'users_id' => $this->users_id,
             'themes_id' => $this->themes_id,
             'statuses_id' => $this->statuses_id,
@@ -66,7 +88,7 @@ class PostsSearch extends Posts
             'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'title', $this->title])
+        $query->andFilterWhere(['like', self::tableName() . '.title', $this->title])
             ->andFilterWhere(['like', 'preview', $this->preview])
             ->andFilterWhere(['like', 'text', $this->text]);
 

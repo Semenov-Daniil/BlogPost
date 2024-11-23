@@ -2,6 +2,7 @@
 
 namespace app\rbac;
 
+use app\models\Statuses;
 use yii\rbac\Rule;
 
 /**

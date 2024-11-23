@@ -5,6 +5,8 @@ namespace app\controllers;
 use app\models\Posts;
 use app\models\PostsSearch;
 use app\models\Themes;
+use Yii;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -24,10 +26,58 @@ class PostController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'rules' => [
+                        [
+                            'actions' => ['index', 'view'],
+                            'allow' => true,
+                        ],
+                        [
+                            'actions' => ['create'],
+                            'allow' => true,
+                            'roles' => ['createPost'],
+                        ],
+                        [
+                            'actions' => ['update'],
+                            'allow' => true,
+                            'roles' => ['updatePost'],
+                            'roleParams' => function($rule) {
+                                return [
+                                    'post' => $this->findModel(Yii::$app->request->get('id')),
+                                ];
+                            },
+                        ],
+                        [
+                            'actions' => ['delete'],
+                            'allow' => true,
+                            'roles' => ['deletePost'],
+                            'roleParams' => function($rule) {
+                                if (Yii::$app->user->can('author')) {
+                                    $post = $this->findModel(Yii::$app->request->get('id'));
+    
+                                    return [
+                                        'post' => $post,
+                                        'countComments' => 0,
+                                    ];
+                                }
+                                return null;
+                            },
+                        ],
+                    ],
+                    'denyCallback' => function ($rule, $action) {
+                        var_dump($rule, $action);die;
+                        return Yii::$app->user->isGuest ? $this->redirect('/site/login') : $this->redirect('/');
+                    }
+                ],
                 'verbs' => [
-                    'class' => VerbFilter::className(),
+                    'class' => VerbFilter::class,
                     'actions' => [
                         'delete' => ['POST'],
+                        'index' => ['GET'],
+                        'view' => ['GET'],
+                        'create' => ['GET', 'POST'],
+                        'update' => ['GET', 'POST'],
                     ],
                 ],
             ]
@@ -47,6 +97,8 @@ class PostController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'themes' => Themes::getThemes(),
+            'deletePost' => Yii::$app->user->can('deletePost'),
         ]);
     }
 
@@ -129,7 +181,7 @@ class PostController extends Controller
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->goBack();
     }
 
     /**

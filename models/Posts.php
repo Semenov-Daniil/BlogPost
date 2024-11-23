@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Exception;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\data\ActiveDataProvider;
@@ -228,8 +229,7 @@ class Posts extends \yii\db\ActiveRecord
                         $themes->title = $this->theme;
                         if (!$themes->save()) {
                             $this->addErrors($themes->errors);
-                            $transaction->rollBack();
-                            return false;
+                            throw new Exception("Couldn't save a new theme");
                         }
                         $this->themes_id = $themes->id;
                     }
@@ -242,8 +242,7 @@ class Posts extends \yii\db\ActiveRecord
                         $image->posts_id = $this->id;
                         if (!$image->save()) {
                             $this->addErrors($image->errors);
-                            $transaction->rollBack();
-                            return false;
+                            throw new Exception("Couldn't save a new image");
                         }
                     }
                     
@@ -257,6 +256,7 @@ class Posts extends \yii\db\ActiveRecord
             }
         }
 
+        $this->deleteFile();
         return false;
     }
 
@@ -268,6 +268,15 @@ class Posts extends \yii\db\ActiveRecord
 
         $this->pathFile = Yii::getAlias('@posts') . '/' . Yii::$app->security->generateRandomString() . '_' . time() . '.' . $this->uploadFile->extension;
         return $this->uploadFile->saveAs($this->pathFile);
+    }
+
+    public function deleteFile(): bool
+    {
+        if ($this->pathFile && file_exists($this->pathFile)) {
+            return unlink($this->pathFile);
+        }
+
+        return true;
     }
 
     public static function getLastPosts($limit)
@@ -289,13 +298,13 @@ class Posts extends \yii\db\ActiveRecord
             ->joinWith('users', false)
             ->joinWith('themes', false)
             ->joinWith('postsImages', false)
+            ->where(['statuses_id' => Statuses::getStatus('Одобрен')])
+            ->limit($limit)
             ;
 
         return new ActiveDataProvider([
             'query' => $query,
-            'pagination' => [
-                'pageSize' => $limit,
-            ],
+            'pagination' => false,
             'sort' => [
                 'defaultOrder' => [
                     'created_at' => SORT_DESC,

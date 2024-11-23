@@ -24,19 +24,29 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout'],
+                'only' => ['logout', 'login', 'register'],
                 'rules' => [
                     [
                         'actions' => ['logout'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
+                    [
+                        'actions' => ['login', 'register'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
                 ],
+                'denyCallback' => function ($rule, $action) {
+                    return Yii::$app->user->isGuest ? $this->redirect('/site/login') : $this->redirect('/');
+                }
             ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
+                    'login' => ['post', 'get'],
+                    'register' => ['post', 'get'],
                 ],
             ],
         ];

@@ -9,6 +9,7 @@ use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
+use yii\helpers\VarDumper;
 
 AppAsset::register($this);
 
@@ -26,7 +27,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
 </head>
-<body class="d-flex flex-column h-100">
+<body class="d-flex flex-column h-100 position-relative">
 <?php $this->beginBody() ?>
 
 <header id="header">
@@ -34,30 +35,32 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     NavBar::begin([
         'brandLabel' => Yii::$app->name,
         'brandUrl' => Yii::$app->homeUrl,
-        'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top'],
-        'collapseOptions' => ['class' => 'test'],
+        'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top', 'data-bs-theme'=>"dark"],
     ]);
     echo Nav::widget([
-        'options' => ['class' => 'navbar-nav'],
+        'options' => ['class' => 'navbar-nav ms-auto'],
         'items' => [
-            ['label' => 'Главная', 'url' => ['/site/index']],
-            ['label' => 'О нас', 'url' => ['/site/about']],
-            Yii::$app->user->isGuest
-                ? ['label' => 'Регистрация', 'url' => ['/site/register']]
-                : '',
-            Yii::$app->user->isGuest
-                ? ['label' => 'Вход', 'url' => ['/site/login']]
-                : '<li class="nav-item">'
-                    . Html::beginForm(['/site/logout'])
-                    . Html::submitButton(
-                        'Выход (' . Yii::$app->user->identity->login . ')',
-                        ['class' => 'nav-link btn btn-link logout']
-                    )
-                    . Html::endForm()
-                    . '</li>',
-            !Yii::$app->user->isGuest && Yii::$app->user->identity->isAuthor
-                ? '<li class="nav-item">' . Html::a('Создать пост', ['/post/create'], ['class' => 'btn btn-outline-success']) . '</li>'
-                : '',
+            ['label' => 'Главная', 'url' => ['/site/index'], 'linkOptions' => ['class' => 'btn btn-dark me-1 px-3']],
+            ['label' => 'О нас', 'url' => ['/site/about'], 'linkOptions' => ['class' => 'btn btn-dark me-1 px-3']],
+            ['label' => 'Посты', 'url' => ['/post/index'], 'linkOptions' => ['class' => 'btn btn-dark me-1 px-3']],
+            ['label' => 'Регистрация', 'url' => ['/site/register'], 'linkOptions' => ['class' => 'btn btn-dark me-1 px-3'], 'visible' => Yii::$app->user->isGuest],
+            ['label' => 'Вход', 'url' => ['/site/login'], 'linkOptions' => ['class' => 'btn btn-dark me-1 px-3'], 'visible' => Yii::$app->user->isGuest],
+            !Yii::$app->user->isGuest 
+            ? [
+                'label' => Html::img('/' . (Yii::$app->user->identity?->avatar ? Yii::$app->user->identity->avatar->url : Yii::getAlias('@defaultAvatar')), ['class' => 'avatar me-1 object-fit-cover', 'alt' => 'Аватарка']) . Yii::$app->user->identity->login,
+                'items' => [
+                    ['label' => 'Личный кабинет', 'url' => '#'],
+                    '-',
+                    ['label' => 'Выход', 'url' => ['/site/logout'], 'linkOptions' => ['class' => 'btn btn-dark me-1 px-3', 'data' => ['method' => 'post']]],
+                ],
+                'linkOptions' => ['class' => 'me-1 px-3 py-1 icon-link'],
+                'encode' => false
+            ]
+            : '',
+            
+            Yii::$app->user->can('createPost')
+                ? '<li class="nav-item">' . Html::a('Создать пост', ['/post/create'], ['class' => 'btn btn-info']) . '</li>'
+                : ''
         ]
     ]);
     NavBar::end();

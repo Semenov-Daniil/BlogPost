@@ -2,8 +2,10 @@
 
 namespace app\models;
 
+use Exception;
 use Yii;
 use yii\base\Model;
+use yii\helpers\VarDumper;
 
 /**
  * RegisterForm is the model behind the register form.
@@ -71,26 +73,50 @@ class RegisterForm extends Model
     public function register()
     {
         if ($this->validate()) {
-            if (is_null($this->uploadFile) || $this->upload()) {
-                $user = new Users();
+            $transaction = Yii::$app->db->beginTransaction();
 
-                $user->attributes = $this->attributes;
+            try {
+                if (is_null($this->uploadFile) || $this->upload()) {
+                    $user = new Users();
     
-                if ($user->save()) {
-                    if ($this->urlFile) {
-                        $avatar = new Avatars();
-                        $avatar->url = $this->urlFile;
-                        $avatar->users_id = $user->id;
-                        $avatar->save();
+                    $user->attributes = $this->attributes;
+        
+                    if ($user->save()) {
+                        if ($this->urlFile) {
+                            $avatar = new Avatars();
+                            $avatar->url = $this->urlFile;
+                            $avatar->users_id = $user->id;
+                            if (!$avatar->save()) {
+                                $this->addErrors($avatar->errors);
+                                throw new Exception("Couldn't save a new image");
+                            }
+                        }
+    
+                        $transaction->commit();
+                        return Yii::$app->user->login($user);
                     }
-
-                    return Yii::$app->user->login($user);
+        
+                    $transaction->rollBack();
+                    $this->addErrors($user->errors);
                 }
-    
-                $this->addErrors($user->errors);
+            } catch(\Exception $e) {
+                $transaction->rollBack();
+            } catch(\Throwable $e) {
+                $transaction->rollBack();
             }
         }
+
+        $this->deleteFile();
         return false;
+    }
+
+    public function deleteFile(): bool
+    {
+        if ($this->urlFile && file_exists($this->urlFile)) {
+            return unlink($this->urlFile);
+        }
+
+        return true;
     }
 
     public function upload()

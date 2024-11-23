@@ -2,6 +2,7 @@
 
 use yii\bootstrap5\Html;
 use yii\bootstrap5\ActiveForm;
+use yii\bootstrap5\Modal;
 use yii\helpers\VarDumper;
 use yii\web\YiiAsset;
 use yii\widgets\Pjax;
@@ -9,38 +10,48 @@ use yii\widgets\Pjax;
 /** @var yii\web\View $this */
 /** @var app\models\Posts $model */
 /** @var yii\bootstrap5\ActiveForm $form */
-/** @var array $themes */
+/** @var $deletePost */
 
 ?>
 
 <div class="post">
-
     <div class="card">
         <?php if ($model->pathFile): ?>
             <img src="/<?= $model->pathFile ?>" class="card-img-top object-fit-cover" alt="Изображение поста" style="height: 30rem;">
         <?php endif; ?>
         <div class="card-body">
-            <h5 class="card-title"><?= Html::encode($model->title); ?></h5>
-            <h6 class="card-subtitle mb-2 text-body-secondary"><?= Html::encode($model->theme); ?> | <?= Html::encode($model->author); ?> | <?= Yii::$app->formatter->asDatetime($model->created_at); ?></h6>
+            <div class="mb-3">
+                <h5 class="card-title"><?= Html::encode($model->title); ?></h5>
+                <h6 class="card-subtitle mb-2 text-body-secondary"><?= Html::encode($model->theme); ?> | <?= Html::encode($model->author); ?> | <?= Yii::$app->formatter->asDatetime($model->created_at); ?></h6>
+            </div>
             <p class="card-text"><?= Html::encode($model->preview); ?></p>
-            <div>
-                <?= Html::a('Читать', ['/post/view', 'id' => $model->id], ['class' => 'btn btn-primary']); ?>
+            <div class="d-flex gap-2 flex-wrap">
+                <?= Html::a('Читать пост', ['/post/view', 'id' => $model->id], ['class' => 'btn btn-primary']); ?>
 
-                <?php if (!Yii::$app->user->isGuest && Yii::$app->user->identity->id == $model->users_id): ?>
-                    <?= Html::a('Редактировать', ['/post/update', 'id' => $model->id], ['class' => 'btn btn-primary']); ?>
+                <?php if (Yii::$app->user->can('updatePost', ['post' => $model])): ?>
+                    <?= Html::a('Редактировать', ['/post/update', 'id' => $model->id], ['class' => 'btn btn-warning']); ?>
                 <?php endif; ?>
 
-                <?php if (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin): ?>
-                    <?= Html::a('Удалить', ['/post/delete', 'id' => $model->id], [
-                        'class' => 'btn btn-danger',
-                        'data' => [
-                            'confirm' => 'Вы точно хотите удалть данный пост?',
-                            'method' => 'post',
-                        ],
-                    ]) ?>
+                <?php if ($deletePost): ?>
+                    <?php
+                        Modal::begin([
+                            'title' => 'Удаление поста',
+                            'toggleButton' => ['label' => 'Удалить', 'class' => 'btn btn-danger'],
+                            'bodyOptions' => ['class' => 'py-4'],
+                            'footer' => Html::a('Удалить', ['/post/delete', 'id' => $model->id], [
+                                'class' => 'btn btn-danger',
+                                'data' => ['method' => 'post'],
+                            ]),
+                            'options' => ['class' => 'user-select-none']
+                        ]);
+                        
+                        echo 'Вы точно хотите удалить пост: ' . Html::encode($model->title) . '?';
+
+                        Modal::end();
+                    ?>
                 <?php endif; ?>
+
             </div>
         </div>
     </div>
-
 </div>
