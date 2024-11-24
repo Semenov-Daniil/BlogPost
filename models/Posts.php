@@ -27,6 +27,7 @@ use yii\helpers\VarDumper;
  * @property Statuses $statuses
  * @property Themes $themes
  * @property Users $users
+ * @property Reactions $reactions
  */
 class Posts extends \yii\db\ActiveRecord
 {
@@ -161,6 +162,30 @@ class Posts extends \yii\db\ActiveRecord
     public function getUsers()
     {
         return $this->hasOne(Users::class, ['id' => 'users_id']);
+    }
+
+    /**
+     * Gets query for [[Reactions]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReactions()
+    {
+        return $this->hasMany(Reactions::class, ['posts_id' => 'id']);
+    }
+
+    public function getLikes()
+    {
+        return Reactions::find()
+            ->where(['posts_id' => $this->id, 'reaction' => 1])
+            ->count();
+    }
+
+    public function getDislikes()
+    {
+        return Reactions::find()
+            ->where(['posts_id' => $this->id, 'reaction' => 0])
+            ->count();
     }
 
     /**
@@ -301,7 +326,7 @@ class Posts extends \yii\db\ActiveRecord
                 'statuses_id',
                 'created_at',
                 'updated_at',
-                'path_image as pathFile'
+                'path_image as pathFile',
             ])
             ->joinWith('users', false)
             ->joinWith('themes', false)
@@ -319,6 +344,31 @@ class Posts extends \yii\db\ActiveRecord
                 ]
             ],
         ]);
+    }
+
+    public static function getPost($id)
+    {
+        return self::find()
+            ->select([
+                self::tableName() . '.id', 
+                self::tableName() . '.title', 
+                'preview', 
+                'text', 
+                Themes::tableName() . '.title as theme',
+                self::tableName() . '.users_id',
+                'login as author', 
+                'themes_id',
+                'statuses_id',
+                'created_at',
+                'updated_at',
+                'path_image as pathFile',
+            ])
+            ->joinWith('users', false)
+            ->joinWith('themes', false)
+            ->joinWith('postImage', false)
+            ->where(Posts::tableName() . '.id=:id', [':id' => $id])
+            ->one()
+        ;
     }
 
     public function deletePost()

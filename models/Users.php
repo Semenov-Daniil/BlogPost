@@ -136,6 +136,16 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
+     * Gets query for [[Reactions]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReactions()
+    {
+        return $this->hasMany(Reactions::class, ['users_id' => 'id']);
+    }
+
+    /**
      * Finds an identity by the given ID.
      *
      * @param string|int $id the ID to be looked for

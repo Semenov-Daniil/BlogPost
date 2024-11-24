@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Posts;
 use app\models\PostsSearch;
+use app\models\Reactions;
 use app\models\Themes;
 use Yii;
 use yii\filters\AccessControl;
@@ -64,9 +65,18 @@ class PostController extends Controller
                                 return null;
                             },
                         ],
+                        [
+                            'actions' => ['reaction'],
+                            'allow' => true,
+                            'roles' => ['reactionPost'],
+                            'roleParams' => function($rule) {
+                                return [
+                                    'post' => $this->findModel(Yii::$app->request->get('postId')),
+                                ];
+                            },
+                        ]
                     ],
                     'denyCallback' => function ($rule, $action) {
-                        var_dump($rule, $action);die;
                         return Yii::$app->user->isGuest ? $this->redirect('/site/login') : $this->redirect('/');
                     }
                 ],
@@ -78,6 +88,7 @@ class PostController extends Controller
                         'view' => ['GET'],
                         'create' => ['GET', 'POST'],
                         'update' => ['GET', 'POST'],
+                        'reaction' => ['POST'],
                     ],
                 ],
             ]
@@ -110,9 +121,40 @@ class PostController extends Controller
      */
     public function actionView($id)
     {   
+        $post = $this->findModel($id);
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $post,
+            'updateOwnPost' => Yii::$app->user->can('updateOwnPost', ['post' => $post]),
+            'deletePost' => Yii::$app->user->can('deleteAuthorPost', ['post' => $post, 'countComments' => 0])
         ]);
+    }
+
+    /**
+     * Reaction posts.
+     * @param int $postId ID
+     * @param int $reaction reaction
+     * @return string
+     */
+    public function actionReaction($postId, $reaction)
+    {   
+        
+        $post = Posts::findOne(['id' => $postId]);
+
+        if (!empty($post)) {
+            Reactions::setReactionPost($postId, $reaction);
+
+            return $this->renderAjax('_reactions', [
+                'countLikes' => $post->likes,
+                'countDislikes' => $post->dislikes,
+                'activeLike' => Reactions::getLike(Yii::$app->user->id, $post->id),
+                'activeDislike' => Reactions::getDislike(Yii::$app->user->id, $post->id),
+                'postId' => $post->id,
+                'pointer' => true,
+            ]);
+        }
+
+        return $this->goHome()->send();
     }
 
     /**
@@ -194,7 +236,7 @@ class PostController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Posts::findOne(['id' => $id])) !== null) {
+        if (($model = Posts::getPost($id)) !== null) {
             return $model;
         }
 

@@ -52,7 +52,7 @@ class PostsSearch extends Posts
                 'statuses_id',
                 'created_at',
                 'updated_at',
-                'path_image as pathFile'
+                'path_image as pathFile',
             ])
             ->joinWith('users', false)
             ->joinWith('themes', false)

@@ -38,28 +38,29 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top', 'data-bs-theme'=>"dark"],
     ]);
     echo Nav::widget([
-        'options' => ['class' => 'navbar-nav ms-auto'],
+        'options' => ['class' => 'navbar-nav ms-auto d-flex gap-1 align-items-center'],
         'items' => [
-            ['label' => 'Главная', 'url' => ['/site/index'], 'linkOptions' => ['class' => 'btn btn-dark me-1 px-3']],
-            ['label' => 'О нас', 'url' => ['/site/about'], 'linkOptions' => ['class' => 'btn btn-dark me-1 px-3']],
-            ['label' => 'Посты', 'url' => ['/post/index'], 'linkOptions' => ['class' => 'btn btn-dark me-1 px-3']],
-            ['label' => 'Регистрация', 'url' => ['/site/register'], 'linkOptions' => ['class' => 'btn btn-dark me-1 px-3'], 'visible' => Yii::$app->user->isGuest],
-            ['label' => 'Вход', 'url' => ['/site/login'], 'linkOptions' => ['class' => 'btn btn-dark me-1 px-3'], 'visible' => Yii::$app->user->isGuest],
+            ['label' => 'Главная', 'url' => ['/site/index'], 'linkOptions' => ['class' => 'btn btn-dark px-3']],
+            ['label' => 'О нас', 'url' => ['/site/about'], 'linkOptions' => ['class' => 'btn btn-dark px-3']],
+            ['label' => 'Посты', 'url' => ['/post/index'], 'linkOptions' => ['class' => 'btn btn-dark px-3']],
+            ['label' => 'Регистрация', 'url' => ['/site/register'], 'linkOptions' => ['class' => 'btn btn-dark px-3'], 'visible' => Yii::$app->user->isGuest],
+            ['label' => 'Вход', 'url' => ['/site/login'], 'linkOptions' => ['class' => 'btn btn-dark px-3'], 'visible' => Yii::$app->user->isGuest],
             !Yii::$app->user->isGuest 
             ? [
-                'label' => Html::img('/' . (Yii::$app->user->identity?->avatar ? Yii::$app->user->identity->avatar->url : Yii::getAlias('@defaultAvatar')), ['class' => 'avatar me-1 object-fit-cover', 'alt' => 'Аватарка']) . Yii::$app->user->identity->login,
+                'label' => Html::img('/' . (Yii::$app->user->identity?->avatar ? Yii::$app->user->identity->avatar->url : Yii::getAlias('@defaultAvatar')), ['class' => 'avatar  object-fit-cover', 'alt' => 'Аватарка']) . Yii::$app->user->identity->login,
                 'items' => [
-                    ['label' => 'Личный кабинет', 'url' => '#'],
+                    ['label' => 'Личный кабинет', 'url' => '#', 'linkOptions' => ['class' => 'btn btn-dark px-3']],
                     '-',
-                    ['label' => 'Выход', 'url' => ['/site/logout'], 'linkOptions' => ['class' => 'btn btn-dark me-1 px-3', 'data' => ['method' => 'post']]],
+                    ['label' => 'Выход', 'url' => ['/site/logout'], 'linkOptions' => ['class' => 'btn btn-dark px-3', 'data' => ['method' => 'post']]],
                 ],
-                'linkOptions' => ['class' => 'me-1 px-3 py-1 icon-link'],
-                'encode' => false
+                'linkOptions' => ['class' => 'px-3 d-flex gap-1 align-items-center'],
+                'encode' => false,
+                'options' => ['class' => 'test']
             ]
             : '',
             
             Yii::$app->user->can('createPost')
-                ? '<li class="nav-item">' . Html::a('Создать пост', ['/post/create'], ['class' => 'btn btn-info']) . '</li>'
+                ? '<li class="nav-item">' . Html::a('Создать пост', ['/post/create'], ['class' => 'btn btn-info px-3 py-2 border-0 d-block']) . '</li>'
                 : ''
         ]
     ]);
