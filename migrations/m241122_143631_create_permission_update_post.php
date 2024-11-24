@@ -1,5 +1,6 @@
 <?php
 
+use app\rbac\IsAuthorRule;
 use app\rbac\UpdateAuthorPostRule;
 use yii\db\Migration;
 
@@ -22,7 +23,7 @@ class m241122_143631_create_permission_update_post extends Migration
         $admin = $auth->getRole('admin');
         $auth->addChild($admin, $updatePost);
 
-        $rule = new UpdateAuthorPostRule();
+        $rule = new IsAuthorRule();
         $auth->add($rule);
 
         $updateOwnPost = $auth->createPermission('updateOwnPost');

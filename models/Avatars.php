@@ -20,7 +20,7 @@ class Avatars extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'bp_avatars';
+        return '{{%avatars}}';
     }
 
     /**

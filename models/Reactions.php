@@ -23,7 +23,7 @@ class Reactions extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'bp_reactions';
+        return '{{%reactions}}';
     }
 
     /**
@@ -91,16 +91,6 @@ class Reactions extends \yii\db\ActiveRecord
             ->where(['users_id' => $userId, 'posts_id' => $postId, 'reaction' => 0])
             ->exists();
     }
-
-    /**
-     * Get reaction a post.
-     */
-    // public static function getDislike($userId, $postId)
-    // {
-    //     return self::find()
-    //         ->where(['users_id' => $userId, 'posts_id' => $postId, 'reaction' => 0])
-    //         ->exists();
-    // }
 
     public static function setReactionPost($postId, $reaction)
     {

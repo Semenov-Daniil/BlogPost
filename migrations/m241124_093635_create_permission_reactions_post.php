@@ -1,5 +1,6 @@
 <?php
 
+use app\rbac\IsNotAuthorRule;
 use app\rbac\ReactionPostRule;
 use yii\db\Migration;
 
@@ -15,7 +16,7 @@ class m241124_093635_create_permission_reactions_post extends Migration
     {
         $auth = Yii::$app->authManager;
 
-        $rule = new ReactionPostRule();
+        $rule = new IsNotAuthorRule();
         $auth->add($rule);
 
         $reactionPost = $auth->createPermission('reactionPost');

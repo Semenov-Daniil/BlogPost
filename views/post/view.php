@@ -1,15 +1,21 @@
 <?php
 
 use app\models\Reactions;
+use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Modal;
 use yii\helpers\Html;
+use yii\helpers\HtmlPurifier;
 use yii\helpers\VarDumper;
 use yii\widgets\DetailView;
+use yii\widgets\Pjax;
 
 /** @var yii\web\View $this */
 /** @var app\models\Posts $model */
+/** @var app\models\Comments $comment */
+/** @var app\models\AnswersComments $answer */
 /** @var $deletePost */
 /** @var $updateOwnPost */
+/** @var yii\data\ActiveDataProvider $commentsDataProvider */
 
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Посты', 'url' => ['index']];
@@ -39,6 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'postId' => $model->id,
                 'pointer' => Yii::$app->user->can('reactionPost', ['post' => $model]),
             ])?>
+            <?php if ($updateOwnPost || $deletePost): ?>
             <div class="post-action d-flex gap-2 flex-wrap mt-4">
                 <?php if ($updateOwnPost): ?>
                     <?= Html::a('Редактировать', ['update', 'id' => $model->id], ['class' => 'btn btn-warning']); ?>
@@ -63,7 +70,17 @@ $this->params['breadcrumbs'][] = $this->title;
                     ?>
                 <?php endif; ?>
             </div>
+            <?php endif; ?>
         </div>
+    </div>
+    <div class="cnt-comments mt-5">
+        <h4>Комментарии <?= $commentsDataProvider->getCount(); ?></h4>
+        <?= $this->render('_comments', [
+            'comment' => $comment,
+            'answer' => $answer,
+            'post' => $model,
+            'commentsDataProvider' => $commentsDataProvider
+        ])?>
     </div>
 
 </div>

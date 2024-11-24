@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\models\AnswersComments;
+use app\models\Comments;
 use app\models\Posts;
 use app\models\PostsSearch;
 use app\models\Reactions;
@@ -126,7 +128,10 @@ class PostController extends Controller
         return $this->render('view', [
             'model' => $post,
             'updateOwnPost' => Yii::$app->user->can('updateOwnPost', ['post' => $post]),
-            'deletePost' => Yii::$app->user->can('deleteAuthorPost', ['post' => $post, 'countComments' => 0])
+            'deletePost' => Yii::$app->user->can('deleteAuthorPost', ['post' => $post, 'countComments' => 0]),
+            'comment' => new Comments(),
+            'answer' => new AnswersComments(),
+            'commentsDataProvider' => Comments::getComments($id),
         ]);
     }
 
@@ -167,11 +172,12 @@ class PostController extends Controller
         $model = new Posts();
 
         if ($this->request->isAjax) {
+            // VarDumper::dump( $this->request->post(), $depth = 10, $highlight = true);die;
             if ($model->load($this->request->post())) {
                 $model->uploadFile = UploadedFile::getInstance($model, 'uploadFile');
 
                 if ($model->create()) {
-                    return $this->redirect(['view', 'id' => $model->id]);
+                    // return $this->redirect(['view', 'id' => $model->id]);
                 }
             }
         } else {

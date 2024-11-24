@@ -43,9 +43,9 @@ $this->registerJsFile('js/createPost.js', ['depends' => YiiAsset::class])
 
         <?= $form->field($model, 'themes_id')->dropDownList($themes, ['prompt' => 'Выберите тему', 'disabled' => $model->check]) ?>
 
-        <?= $form->field($model, 'check', ['options' => ['class' => 'py-1']])->checkbox(['data-bs-toggle' => "collapse", 'data-bs-target' => "#collapseThemeInput", 'aria-expanded' => "false", 'aria-controls' => "collapseThemeInput"]) ?>
+        <?= $form->field($model, 'check', ['options' => ['class' => 'py-1']])->checkbox(['data-bs-toggle' => "collapse", 'data-bs-target' => "#collapseThemeInput", 'aria-expanded' => ($model->check ? 'true' : 'false'), 'aria-controls' => "collapseThemeInput", "role" => "button"]) ?>
 
-        <div class="collapse" id="collapseThemeInput">
+        <div class="collapse <?= $model->check ? 'show' : '' ?>" id="collapseThemeInput">
             <?= $form->field($model, 'theme')->textInput(['maxlength' => true, 'disabled' => !$model->check]) ?>
         </div>
 

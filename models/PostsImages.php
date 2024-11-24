@@ -33,7 +33,7 @@ class PostsImages extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'bp_posts_images';
+        return '{{%posts_images}}';
     }
 
     /**

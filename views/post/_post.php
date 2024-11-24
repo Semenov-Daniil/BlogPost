@@ -1,15 +1,10 @@
 <?php
 
 use yii\bootstrap5\Html;
-use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Modal;
-use yii\helpers\VarDumper;
-use yii\web\YiiAsset;
-use yii\widgets\Pjax;
 
 /** @var yii\web\View $this */
 /** @var app\models\Posts $model */
-/** @var yii\bootstrap5\ActiveForm $form */
 /** @var $deletePost */
 
 ?>

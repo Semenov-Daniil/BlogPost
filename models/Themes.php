@@ -19,7 +19,7 @@ class Themes extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'bp_themes';
+        return '{{%themes}}';
     }
 
     /**

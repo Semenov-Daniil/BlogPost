@@ -2,14 +2,15 @@
 
 namespace app\rbac;
 
+use app\models\Statuses;
 use yii\rbac\Rule;
 
 /**
  * We check the AuthorID for compliance with the user passed through the parameters
  */
-class ReactionPostRule extends Rule
+class IsAuthorRule extends Rule
 {
-    public $name = 'reactionPost';
+    public $name = 'isAuthor';
 
     /**
      * @param string|int $user the user ID.
@@ -19,6 +20,6 @@ class ReactionPostRule extends Rule
      */
     public function execute($user, $item, $params)
     {
-        return isset($params['post']) ? ($params['post']->users_id !== $user) : false;
+        return isset($params['post']) ? $params['post']->users_id == $user : false;
     }
 }

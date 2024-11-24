@@ -69,7 +69,7 @@ class Posts extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'bp_posts';
+        return '{{%posts}}';
     }
 
     /**
@@ -155,6 +155,16 @@ class Posts extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[Comments]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getComments()
+    {
+        return $this->hasMany(Comments::class, ['posts_id' => 'id']);
+    }
+
+    /**
      * Gets query for [[Users]].
      *
      * @return \yii\db\ActiveQuery
@@ -206,8 +216,7 @@ class Posts extends \yii\db\ActiveRecord
                         $themes->title = $this->theme;
                         if (!$themes->save()) {
                             $this->addErrors($themes->errors);
-                            $transaction->rollBack();
-                            return false;
+                            throw new Exception("Couldn't save a new theme");
                         }
                         $this->themes_id = $themes->id;
                     }
@@ -220,8 +229,7 @@ class Posts extends \yii\db\ActiveRecord
                         $image->posts_id = $this->id;
                         if (!$image->save()) {
                             $this->addErrors($image->errors);
-                            $transaction->rollBack();
-                            return false;
+                            throw new Exception("Couldn't save a new image");
                         }
                     }
                     
@@ -235,6 +243,7 @@ class Posts extends \yii\db\ActiveRecord
             }
         }
 
+        $this->deleteFile();
         return false;
     }
 

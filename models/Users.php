@@ -60,7 +60,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      */
     public static function tableName()
     {
-        return 'bp_users';
+        return '{{%users}}';
     }
 
     /**
@@ -143,6 +143,16 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function getReactions()
     {
         return $this->hasMany(Reactions::class, ['users_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[Comments]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getComments()
+    {
+        return $this->hasMany(Comments::class, ['users_id' => 'id']);
     }
 
     /**

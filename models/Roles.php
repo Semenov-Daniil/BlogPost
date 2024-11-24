@@ -19,7 +19,7 @@ class Roles extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'bp_roles';
+        return '{{%roles}}';
     }
 
     /**

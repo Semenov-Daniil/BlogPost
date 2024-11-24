@@ -19,7 +19,7 @@ class Statuses extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'bp_statuses';
+        return '{{%statuses}}';
     }
 
     /**
