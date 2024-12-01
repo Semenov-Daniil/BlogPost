@@ -30,7 +30,7 @@ $this->registerJsFile('/js/searchPosts.js', ['depends' => YiiAsset::class]);
         'timeout' => 5000
     ]); ?>
 
-    <div class="cnt-search d-flex flex-wrap gap-4 justify-content-between align-items-end mb-4">
+    <div class="cnt-search d-flex flex-wrap gap-4 justify-content-between align-items-end mb-4 mt-4">
         <div class="cnt-sorts">
             <p>Сортировка</p>
             <div class="sort-links d-flex flex-wrap gap-4">

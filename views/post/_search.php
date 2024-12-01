@@ -31,9 +31,9 @@ use yii\bootstrap5\ActiveForm;
         'enableClientValidation' => false
     ]); ?>
 
-    <?= $form->field($model, 'title')->textInput(['data' => ['url' => '/post/index']]); ?>
+    <?= $form->field($model, 'title')->textInput(); ?>
 
-    <?= $form->field($model, 'themes_id')->dropDownList($themes, ['prompt' => 'Все темы', 'style' => 'width: 13rem;', 'encodeSpaces' => true, 'data' => ['url' => '/post/index']]) ?>
+    <?= $form->field($model, 'themes_id')->dropDownList($themes, ['prompt' => 'Все темы']) ?>
 
     <?php ActiveForm::end(); ?>
 
