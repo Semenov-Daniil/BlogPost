@@ -67,4 +67,17 @@ class Themes extends \yii\db\ActiveRecord
             ->column()
             ;
     }
+
+    /**
+     * Checks if there is an attribute with this value in the Themes table.
+     * 
+     * @param string $attr name attribute
+     * @param mixed $value value attribute
+     * 
+     * @return int|null if an attribute with a value is found, it returns an `id`, otherwise `null`
+     */
+    public static function isUniqueTheme(string $attr, mixed $value): int|null
+    {
+        return self::findOne([$attr => $value])?->id;
+    }
 }

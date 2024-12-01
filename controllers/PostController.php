@@ -172,12 +172,11 @@ class PostController extends Controller
         $model = new Posts();
 
         if ($this->request->isAjax) {
-            // VarDumper::dump( $this->request->post(), $depth = 10, $highlight = true);die;
             if ($model->load($this->request->post())) {
                 $model->uploadFile = UploadedFile::getInstance($model, 'uploadFile');
 
                 if ($model->create()) {
-                    // return $this->redirect(['view', 'id' => $model->id]);
+                    return $this->redirect(['view', 'id' => $model->id]);
                 }
             }
         } else {

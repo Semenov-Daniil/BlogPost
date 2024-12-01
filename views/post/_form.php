@@ -2,6 +2,7 @@
 
 use yii\bootstrap5\Html;
 use yii\bootstrap5\ActiveForm;
+use yii\helpers\VarDumper;
 use yii\web\YiiAsset;
 use yii\widgets\Pjax;
 
@@ -10,7 +11,7 @@ use yii\widgets\Pjax;
 /** @var yii\bootstrap5\ActiveForm $form */
 /** @var array $themes */
 
-$this->registerJsFile('js/createPost.js', ['depends' => YiiAsset::class])
+$this->registerJsFile('js/createPost.js', ['depends' => YiiAsset::class]);
 
 ?>
 
@@ -43,7 +44,7 @@ $this->registerJsFile('js/createPost.js', ['depends' => YiiAsset::class])
 
         <?= $form->field($model, 'themes_id')->dropDownList($themes, ['prompt' => 'Выберите тему', 'disabled' => $model->check]) ?>
 
-        <?= $form->field($model, 'check', ['options' => ['class' => 'py-1']])->checkbox(['data-bs-toggle' => "collapse", 'data-bs-target' => "#collapseThemeInput", 'aria-expanded' => ($model->check ? 'true' : 'false'), 'aria-controls' => "collapseThemeInput", "role" => "button"]) ?>
+        <?= $form->field($model, 'check', ['options' => ['class' => 'py-1'], 'enableClientValidation' => false])->checkbox(['data-bs-toggle' => "collapse", 'data-bs-target' => "#collapseThemeInput", 'aria-expanded' => ($model->check ? 'true' : 'false'), 'aria-controls' => "collapseThemeInput", "role" => "button"]) ?>
 
         <div class="collapse <?= $model->check ? 'show' : '' ?>" id="collapseThemeInput">
             <?= $form->field($model, 'theme')->textInput(['maxlength' => true, 'disabled' => !$model->check]) ?>

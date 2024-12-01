@@ -58,7 +58,7 @@ class Posts extends \yii\db\ActiveRecord
         }
 
         if ($this->isNewRecord) {
-            $this->statuses_id = Statuses::getStatus('Редактирование');
+            $this->users_id = Yii::$app->user->identity->id;
         }
         
         return true;
@@ -100,6 +100,8 @@ class Posts extends \yii\db\ActiveRecord
             }, 'whenClient' => "function (attribute, value) {
                 return $('#posts-check').prop('checked');
             }"],
+
+            ['theme', 'filter', 'filter' => [$this, 'normalizeTheme']]
         ];
     }
 
@@ -122,6 +124,34 @@ class Posts extends \yii\db\ActiveRecord
             'theme' => 'Своя тема',
             'check' => 'Другая тема',
         ];
+    }
+
+    public function normalizeTheme($value) {
+        $converter = [
+            'A' => 'А',
+            'B' => 'В',
+            'C' => 'С',
+            'E' => 'Е',
+            'H' => 'Н',
+            'K' => 'К',
+            'M' => 'М',
+            'O' => 'О',
+            'P' => 'Р',
+            'T' => 'Т',
+            'X' => 'Х',
+            'Y' => 'У',
+            'a' => 'а',
+            'c' => 'с',
+            'e' => 'е',
+            'k' => 'к',
+            'o' => 'о',
+            'p' => 'р',
+            'x' => 'х',
+            'y' => 'у',
+        ];
+
+        $convertedString = strtr($value, $converter);
+        return $convertedString;
     }
 
     /**
@@ -198,6 +228,27 @@ class Posts extends \yii\db\ActiveRecord
             ->count();
     }
 
+    public function createNewTheme(): void
+    {
+        if ($this->check) { 
+            $theme = Themes::isUniqueTheme('title', $this->theme);
+
+            if (is_null($theme)) {
+                $theme = new Themes();
+                $theme->title = $this->theme;
+                if (!$theme->save()) {
+                    $this->addErrors($theme->errors);
+                    throw new Exception("Couldn't save a new theme");
+                }
+                $this->themes_id = $theme->id;
+            } else {
+                $this->themes_id = $theme;
+                $this->theme = '';
+                $this->check = false;
+            }
+        }
+    }
+
     /**
      * Create new post
      * 
@@ -209,17 +260,9 @@ class Posts extends \yii\db\ActiveRecord
             if (is_null($this->uploadFile) || $this->upload()) {
                 $transaction = Yii::$app->db->beginTransaction();
                 try {
-                    $this->users_id = Yii::$app->user->identity->id;
+                    $this->statuses_id = Statuses::getStatus('Редактирование');
                     
-                    if ($this->check) {
-                        $themes = new Themes();
-                        $themes->title = $this->theme;
-                        if (!$themes->save()) {
-                            $this->addErrors($themes->errors);
-                            throw new Exception("Couldn't save a new theme");
-                        }
-                        $this->themes_id = $themes->id;
-                    }
+                    $this->createNewTheme();
                     
                     $this->save(false);
                     
@@ -258,23 +301,15 @@ class Posts extends \yii\db\ActiveRecord
             if (is_null($this->uploadFile) || $this->upload()) {
                 $transaction = Yii::$app->db->beginTransaction();
                 try {
-                    if ($this->check) {
-                        $themes = new Themes();
-                        $themes->title = $this->theme;
-                        if (!$themes->save()) {
-                            $this->addErrors($themes->errors);
-                            throw new Exception("Couldn't save a new theme");
-                        }
-                        $this->themes_id = $themes->id;
-                    }
+                    $this->statuses_id = Statuses::getStatus('Редактирование');
+
+                    $this->createNewTheme();
                     
                     $this->save(false);
                     
                     if ($this->pathFile) {
                         if ($image = PostsImages::findOne(['posts_id' => $this->id])) {
-                            if (file_exists($image->path_image)) {
-                                unlink($image->path_image);
-                            }
+                            $this->deleteFile();
                         } else {
                             $image = new PostsImages();
                             $image->posts_id = $this->id;
