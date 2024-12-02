@@ -72,6 +72,12 @@ $config = [
         ],
         
     ],
+    'modules' => [
+        'account' => [
+            'class' => 'app\modules\account\Module',
+            'defaultRoute' => 'post'
+        ],
+    ],
     'params' => $params,
 ];
 

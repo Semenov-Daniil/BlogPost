@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
                     ],
                     'options' => [
-                        ['enctype' => 'multipart/form-data'],
+                        'enctype' => 'multipart/form-data',
                         'data' => ['pjax' => true]
                     ]
                 ]); ?>

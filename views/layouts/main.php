@@ -39,6 +39,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     ]);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav ms-auto d-flex gap-1 align-items-center'],
+        'route' => Yii::$app->request->getPathInfo(),
         'items' => [
             ['label' => 'Главная', 'url' => ['/site/index'], 'linkOptions' => ['class' => 'btn btn-dark px-3']],
             ['label' => 'О нас', 'url' => ['/site/about'], 'linkOptions' => ['class' => 'btn btn-dark px-3']],
@@ -47,9 +48,9 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
             ['label' => 'Вход', 'url' => ['/site/login'], 'linkOptions' => ['class' => 'btn btn-dark px-3'], 'visible' => Yii::$app->user->isGuest],
             !Yii::$app->user->isGuest 
             ? [
-                'label' => Html::img('/' . (Yii::$app->user->identity?->avatar ? Yii::$app->user->identity->avatar->url : Yii::getAlias('@defaultAvatar')), ['class' => 'avatar  object-fit-cover', 'alt' => 'Аватарка']) . Yii::$app->user->identity->login,
+                'label' => Html::img('/' . (Yii::$app->user->identity?->avatar ? Yii::$app->user->identity->avatar->url : Yii::getAlias('@defaultAvatar')), ['class' => 'avatar-cicle object-fit-cover', 'alt' => 'Аватарка']) . Yii::$app->user->identity->login,
                 'items' => [
-                    ['label' => 'Личный кабинет', 'url' => '#', 'linkOptions' => ['class' => 'btn btn-dark px-3']],
+                    ['label' => 'Личный кабинет', 'url' => '/account', 'linkOptions' => ['class' => 'btn btn-dark px-3']],
                     '-',
                     ['label' => 'Выход', 'url' => ['/site/logout'], 'linkOptions' => ['class' => 'btn btn-dark px-3', 'data' => ['method' => 'post']]],
                 ],

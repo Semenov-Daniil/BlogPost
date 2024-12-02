@@ -10,7 +10,7 @@ use yii\bootstrap5\ActiveForm;
 
 ?>
 
-<div class="posts-search">
+<div class="posts-search col-12 col-lg">
 
     <?php $form = ActiveForm::begin([
         'id' => 'posts-search-form',
@@ -25,7 +25,7 @@ use yii\bootstrap5\ActiveForm;
             'labelOptions' => ['class' => 'col-lg-7 col-form-label mr-lg-3 p-0 mb-3'],
             'inputOptions' => ['class' => 'form-control'],
             'options' => [
-                'class' => ''
+                'class' => 'col-sm col-12'
             ]
         ],
         'enableClientValidation' => false

@@ -143,7 +143,6 @@ class PostController extends Controller
      */
     public function actionReaction($postId, $reaction)
     {   
-        
         $post = Posts::findOne(['id' => $postId]);
 
         if (!empty($post)) {

@@ -286,6 +286,7 @@ class Posts extends \yii\db\ActiveRecord
             }
         }
 
+
         $this->deleteFile();
         return false;
     }
