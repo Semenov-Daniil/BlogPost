@@ -1,7 +1,12 @@
-.avatar {
+.avatar-cicle {
     width: 2rem;
     height: 2rem;
     border-radius: 100%;
+}
+
+.user-avatar .avatar {
+    aspect-ratio: 1;
+    object-fit: cover;
 }
 
 .is-invalid {
