@@ -10,9 +10,9 @@ use yii\base\Model;
 use yii\helpers\VarDumper;
 
 /**
- * ChangeUserForm is the model behind the cehnge user form.
+ * UpdateUserForm is the model behind the update user form.
  */
-class ChangeUserForm extends Model
+class UpdateUserForm extends Model
 {
     public string $name = '';
     public string $surname = '';
@@ -37,21 +37,25 @@ class ChangeUserForm extends Model
     public function rules()
     {
         return [
-            [['uploadFile', 'password', 'password_repeat'], 'required', 'on' => self::SCENARIO_DEFAULT],
-            [['uploadFile'], 'required', 'on' => self::SCENARIO_UPDATE_AVATAR],
-            [['password', 'password_repeat'], 'required', 'on' => self::SCENARIO_CHANGE_PASSWORD],
+            [['name', 'surname', 'login', 'email', 'phone', 'uploadFile', 'password', 'password_repeat'], 'required', 'on' => self::SCENARIO_DEFAULT],
             [['name', 'surname', 'patronymic', 'login', 'email', 'password_repeat'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 20],
             [['password'], 'string', 'max' => 255, 'min' => 6],
             ['uploadFile', 'image'],
-            [['login'], 'unique', 'targetClass' => Users::class],
-            [['email'], 'unique', 'targetClass' => Users::class],
+            [['login'], 'unique', 'targetClass' => Users::class, 'filter' => ['not', ['login' => Yii::$app->user->identity->login]]],
+            [['email'], 'unique', 'targetClass' => Users::class, 'filter' => ['not', ['email' => Yii::$app->user->identity->email]]],
             [['name', 'surname', 'patronymic'], 'match', 'pattern' => '/^[а-яё\s\-]+$/ui', 'message' => 'Только кириллица, пробел, тире.'],
             [['login'], 'match', 'pattern' => '/^[a-z\-]+$/i', 'message' => 'Только латиница, тире.'],
             [['password'], 'match', 'pattern' => '/^[a-z\d]+$/i', 'message' => 'Только латиница, цифры.'],
             [['phone'], 'match', 'pattern' => '/^\+7\([\d]{3}\)\-[\d]{3}(\-[\d]{2}){2}$/i', 'message' => 'Только в формате +7(XXX)-XXX-XX-XX.'],
             ['password_repeat', 'compare', 'compareAttribute' => 'password'],
             ['email', 'email'],
+
+            [['uploadFile'], 'required', 'on' => self::SCENARIO_UPDATE_AVATAR],
+
+            [['password', 'password_repeat'], 'required', 'on' => self::SCENARIO_CHANGE_PASSWORD],
+
+            [['name', 'surname', 'login', 'email', 'phone'], 'required', 'on' => self::SCENARIO_UPDATE_INFO],
         ];
     }
 
@@ -77,7 +81,7 @@ class ChangeUserForm extends Model
      * Register new user.
      * @return bool the user is registered and logged in successfully
      */
-    public function changeAvatar()
+    public function updateAvatar()
     {
         if ($this->validate()) {
             $transaction = Yii::$app->db->beginTransaction();

@@ -54,7 +54,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
                     '-',
                     ['label' => 'Выход', 'url' => ['/site/logout'], 'linkOptions' => ['class' => 'btn btn-dark px-3', 'data' => ['method' => 'post']]],
                 ],
-                'linkOptions' => ['class' => 'px-3 d-flex gap-1 align-items-center'],
+                'linkOptions' => ['class' => 'px-3 d-flex gap-1 align-items-center user-item'],
                 'encode' => false,
                 'options' => ['class' => 'test']
             ]

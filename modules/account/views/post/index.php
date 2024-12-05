@@ -31,7 +31,6 @@ $this->registerJsFile('js/account.js', ['depends' => YiiAsset::class]);
     ]); ?>
         <?= $this->render('/user/_user', [
             'model' => Yii::$app->user->identity,
-            'modelUser' => $model
         ]) ?>
     <?php Pjax::end(); ?>
 

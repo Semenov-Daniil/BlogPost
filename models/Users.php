@@ -27,6 +27,13 @@ use yii\db\Expression;
  */
 class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
+    public $uploadFile = null;
+    public string $urlFile = '';
+
+    const SCENARIO_UPDATE_AVATAR = 'update-avatar';
+    const SCENARIO_UPDATE_INFO = 'update-info';
+    const SCENARIO_CHANGE_PASSWORD = 'change-password';
+
     public function behaviors()
     {
         return [
@@ -81,7 +88,10 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             ['patronymic', 'default', 'value' => null],
             ['patronymic', 'filter', 'filter' => function($value) {
                 return is_null($value) ? $value : trim($value);
-            }]
+            }],
+
+            [['uploadFile'], 'required', 'on' => self::SCENARIO_UPDATE_AVATAR],
+            ['uploadFile', 'image'],
         ];
     }
 
@@ -102,6 +112,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             'auth_key' => 'Auth Key',
             'roles_id' => 'Роль',
             'registered_at' => 'Зарегистрирован с',
+            'uploadFile' => 'Аватар',
         ];
     }
 

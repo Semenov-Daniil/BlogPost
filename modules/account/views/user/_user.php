@@ -16,32 +16,12 @@ use yii\bootstrap5\Modal;
         <?php Modal::begin([
             'id' => 'modal-update-avatar',
             'title' => 'Изменение аватара',
-            'toggleButton' => ['label' => 'Изменить аватар', 'class' => 'btn btn-primary', 'type' => "button"],
+            'toggleButton' => ['label' => 'Изменить аватар', 'class' => 'btn btn-primary', 'type' => 'button'],
+            'size' => Modal::SIZE_LARGE,
         ]); ?>
-            <?php $form = ActiveForm::begin([
-                'id' => 'change-avatar-form',
-                'action' => ['change-avatar'],
-                'fieldConfig' => [
-                    'template' => "{label}\n{input}\n{error}",
-                    'labelOptions' => ['class' => 'col-lg-7 col-form-label mr-lg-3'],
-                    'inputOptions' => ['class' => 'form-control'],
-                    'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
-                ],
-                'options' => [
-                    'enctype' => 'multipart/form-data',
-                    'data' => ['pjax' => true]
-                ]
-            ]); ?>
-
-                <?= $form->field($modelUser, 'uploadFile')->fileInput() ?>
-
-                <div class="form-group">
-                    <div>
-                        <?= Html::submitButton('Изменить аватар', ['class' => 'btn btn-success', 'id' => 'btn-update-avatar']) ?>
-                    </div>
-                </div>
-
-            <?php ActiveForm::end(); ?>
+            <?= $this->render('_avatar-form', [
+                'model' => $model
+            ])?>
         <?php Modal::end(); ?>
     </div>
     <div class="card col-md col-12">
@@ -75,7 +55,16 @@ use yii\bootstrap5\Modal;
                 </div>
             </div>
             <div class="d-flex gap-2 flex-wrap  justify-content-md-end">
-                <?= Html::button('Изменить информацию', ['class' => 'btn btn-primary']); ?>
+                <?php Modal::begin([
+                    'id' => 'modal-update-info',
+                    'title' => 'Изменение личную инфорацию',
+                    'toggleButton' => ['label' => 'Изменить личную инфорацию', 'class' => 'btn btn-primary', 'type' => 'button'],
+                    'size' => Modal::SIZE_LARGE,
+                ]); ?>
+                    <?= $this->render('_info-form', [
+                        'model' => $model
+                    ])?>
+                <?php Modal::end(); ?>
                 <?= Html::button('Изменить пароль', ['class' => 'btn btn-primary']); ?>
             </div>
         </div>

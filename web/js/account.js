@@ -9,9 +9,9 @@ $(() => {
             'padding-right': ''
         });
     });
-
+    
     $('#pjax-user').on('pjax:success', function () {
-        $('header nav .avatar-user-item .avatar-cicle').prop('src', $('#pjax-user .user-avatar .avatar').attr('src'));
+        $('header nav .user-item .avatar-cicle').prop('src', $('#pjax-user .user-avatar .avatar').attr('src'));
     });
     
 });

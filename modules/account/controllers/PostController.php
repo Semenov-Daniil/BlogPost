@@ -4,7 +4,7 @@ namespace app\modules\account\controllers;
 
 use app\models\Posts;
 use app\models\Users;
-use app\modules\account\models\ChangeUserForm;
+use app\modules\account\models\UpdateUserForm;
 use app\modules\account\models\PostsSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -43,7 +43,24 @@ class PostController extends Controller
     {
         $searchModel = new PostsSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
-        $model = new ChangeUserForm();
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionUpdateAvatar()
+    {
+        $searchModel = new PostsSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
+        $model = new UpdateUserForm(['scenario' => UpdateUserForm::SCENARIO_UPDATE_AVATAR]);
+
+        if ($this->request->isAjax) {
+            $model->uploadFile = UploadedFile::getInstance($model, 'uploadFile');
+
+            $model->updateAvatar();
+        }
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -51,17 +68,17 @@ class PostController extends Controller
             'model' => $model,
         ]);
     }
-
-    public function actionChangeAvatar()
+    
+    public function actionUpdateInfo()
     {
         $searchModel = new PostsSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
-        $model = new ChangeUserForm(['scenario' => ChangeUserForm::SCENARIO_UPDATE_AVATAR]);
+        $model = new UpdateUserForm(['scenario' => UpdateUserForm::SCENARIO_UPDATE_AVATAR]);
 
         if ($this->request->isAjax) {
             $model->uploadFile = UploadedFile::getInstance($model, 'uploadFile');
 
-            $model->changeAvatar();
+            $model->updateAvatar();
         }
 
         return $this->render('index', [
