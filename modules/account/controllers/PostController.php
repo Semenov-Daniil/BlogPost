@@ -43,10 +43,12 @@ class PostController extends Controller
     {
         $searchModel = new PostsSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
+        $model = new UpdateUserForm();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'model' => $model
         ]);
     }
 

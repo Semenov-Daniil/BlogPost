@@ -11,8 +11,7 @@ use yii\widgets\Pjax;
 /** @var yii\web\View $this */
 /** @var app\modules\account\models\PostsSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
-/** @var app\models\Users $user */
-/** @var app\models\Users $model */
+/** @var app\modules\account\models\UpdateUserForm $model */
 
 $this->title = 'Личный кабинет';
 $this->params['breadcrumbs'][] = $this->title;
@@ -31,6 +30,7 @@ $this->registerJsFile('js/account.js', ['depends' => YiiAsset::class]);
     ]); ?>
         <?= $this->render('/user/_user', [
             'model' => Yii::$app->user->identity,
+            'modelForm' => $model,
         ]) ?>
     <?php Pjax::end(); ?>
 

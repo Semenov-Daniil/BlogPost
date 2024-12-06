@@ -6,7 +6,7 @@ use yii\bootstrap5\Modal;
 
 /** @var yii\web\View $this */
 /** @var app\models\Users $model */
-/** @var app\models\Users $modelUser */
+/** @var app\modules\account\models\UpdateUserForm $modelForm */
 
 ?>
 
@@ -20,7 +20,7 @@ use yii\bootstrap5\Modal;
             'size' => Modal::SIZE_LARGE,
         ]); ?>
             <?= $this->render('_avatar-form', [
-                'model' => $model
+                'model' => $modelForm
             ])?>
         <?php Modal::end(); ?>
     </div>
