@@ -23,13 +23,13 @@ class m241202_074902_insert_rows_in_statuses_table extends Migration
             ],
             [
                 'Одобрен'
-            ]
+            ],
             [
                 'Запрещен'
             ],
             [
                 'На модерации'
-            ]
+            ],
         ]);
     }
 
