@@ -14,29 +14,34 @@ use yii\widgets\Pjax;
 
 <div class="update-avatar-cnt">
 
-    <?php $form = ActiveForm::begin([
-        'id' => 'update-avatar-form',
-        'action' => ['update-avatar'],
-        'fieldConfig' => [
-            'template' => "{label}\n{input}\n{error}",
-            'labelOptions' => ['class' => 'col-lg-7 col-form-label mr-lg-3'],
-            'inputOptions' => ['class' => 'form-control'],
-            'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
-        ],
-        'options' => [
-            'enctype' => 'multipart/form-data',
-            'data' => ['pjax' => true]
-        ]
+    <?php Pjax::begin([
+        'id' => 'pjax-update-avatar',
+        'enablePushState' => false,
+        'timeout' => 10000,
     ]); ?>
+        <?php $form = ActiveForm::begin([
+            'id' => 'update-avatar-form',
+            'action' => ['update-avatar'],
+            'fieldConfig' => [
+                'template' => "{label}\n{input}\n{error}",
+                'labelOptions' => ['class' => 'col-lg-7 col-form-label mr-lg-3'],
+                'inputOptions' => ['class' => 'form-control'],
+                'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
+            ],
+            'options' => [
+                'enctype' => 'multipart/form-data',
+                'data' => ['pjax' => true]
+            ]
+        ]); ?>
 
-        <?= $form->field($model, 'uploadFile')->fileInput() ?>
+            <?= $form->field($model, 'uploadFile')->fileInput()->label('Загрузите аватар') ?>
 
-        <div class="form-group">
-            <div>
-                <?= Html::submitButton('Изменить аватар', ['class' => 'btn btn-success', 'id' => 'btn-update-avatar']) ?>
+            <div class="d-flex flex-wrap gap-2 justify-content-between mt-3">
+                <?= Html::button('Назад', ['class' => 'btn btn-info', 'data-bs-dismiss' => 'modal']) ?>
+                <?= Html::submitButton('Изменить аватар', ['class' => 'btn btn-success']) ?>
             </div>
-        </div>
 
-    <?php ActiveForm::end(); ?>
+        <?php ActiveForm::end(); ?>
+    <?php Pjax::end(); ?>
 
 </div>

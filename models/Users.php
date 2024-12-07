@@ -30,7 +30,6 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public $uploadFile = null;
     public string $urlFile = '';
 
-    const SCENARIO_UPDATE_AVATAR = 'update-avatar';
     const SCENARIO_UPDATE_INFO = 'update-info';
     const SCENARIO_CHANGE_PASSWORD = 'change-password';
 
@@ -70,17 +69,26 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return '{{%users}}';
     }
 
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_UPDATE_INFO] = ['name', 'surname', 'patronymic', 'email', 'login', 'phone'];
+        $scenarios[self::SCENARIO_CHANGE_PASSWORD] = ['password'];
+        return $scenarios;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['name', 'surname', 'login', 'email', 'password', 'phone'], 'required'],
+            [['name', 'surname', 'login', 'email', 'password', 'phone'], 'required', 'on' => self::SCENARIO_DEFAULT],
             [['roles_id'], 'integer'],
             [['registered_at'], 'safe'],
             [['name', 'surname', 'patronymic', 'login', 'email', 'password', 'auth_key'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 20],
+            [['phone'], 'match', 'pattern' => '/^\+7\([\d]{3}\)\-[\d]{3}(\-[\d]{2}){2}$/i', 'message' => 'Только в формате +7(XXX)-XXX-XX-XX.'],
             [['login'], 'unique'],
             [['email'], 'unique'],
             [['roles_id'], 'exist', 'skipOnError' => true, 'targetClass' => Roles::class, 'targetAttribute' => ['roles_id' => 'id']],
@@ -90,8 +98,8 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
                 return is_null($value) ? $value : trim($value);
             }],
 
-            [['uploadFile'], 'required', 'on' => self::SCENARIO_UPDATE_AVATAR],
-            ['uploadFile', 'image'],
+            [['name', 'surname', 'login', 'email', 'phone'], 'required', 'on' => self::SCENARIO_UPDATE_INFO],
+            [['password'], 'required', 'on' => self::SCENARIO_CHANGE_PASSWORD],
         ];
     }
 
@@ -114,6 +122,15 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             'registered_at' => 'Зарегистрирован с',
             'uploadFile' => 'Аватар',
         ];
+    }
+
+    public function fields()
+    {
+        $fields = parent::fields();
+
+        unset($fields['auth_key'], $fields['password']);
+
+        return $fields;
     }
 
     /**

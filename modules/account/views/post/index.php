@@ -27,6 +27,7 @@ $this->registerJsFile('js/account.js', ['depends' => YiiAsset::class]);
         'id' => 'pjax-user',
         'enablePushState' => false,
         'timeout' => 10000,
+        'formSelector' => false,
     ]); ?>
         <?= $this->render('/user/_user', [
             'model' => Yii::$app->user->identity,

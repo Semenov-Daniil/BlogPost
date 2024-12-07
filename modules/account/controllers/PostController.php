@@ -6,9 +6,12 @@ use app\models\Posts;
 use app\models\Users;
 use app\modules\account\models\UpdateUserForm;
 use app\modules\account\models\PostsSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\Html;
+use yii\helpers\VarDumper;
 use yii\web\UploadedFile;
 
 /**
@@ -44,6 +47,7 @@ class PostController extends Controller
         $searchModel = new PostsSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
         $model = new UpdateUserForm();
+        $model->attributes = Users::findOne(['id' => Yii::$app->user->id])->toArray();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -54,39 +58,80 @@ class PostController extends Controller
 
     public function actionUpdateAvatar()
     {
-        $searchModel = new PostsSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
-        $model = new UpdateUserForm(['scenario' => UpdateUserForm::SCENARIO_UPDATE_AVATAR]);
-
         if ($this->request->isAjax) {
-            $model->uploadFile = UploadedFile::getInstance($model, 'uploadFile');
+            $model = new UpdateUserForm(['scenario' => UpdateUserForm::SCENARIO_UPDATE_AVATAR]);
 
-            $model->updateAvatar();
+            if ($this->request->isPost) {
+                $model->uploadFile = UploadedFile::getInstance($model, 'uploadFile');
+    
+                if ($model->updateAvatar()) {
+                    Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                    return [
+                        'success' => true,
+                        'img' => $model->urlFile,
+                    ];
+    
+                }
+            }
+
+            return $this->renderAjax('/user/_avatar-form', [
+                'model' => $model
+            ]);
         }
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-            'model' => $model,
-        ]);
+        return $this->redirect('index');
     }
     
     public function actionUpdateInfo()
     {
-        $searchModel = new PostsSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
-        $model = new UpdateUserForm(['scenario' => UpdateUserForm::SCENARIO_UPDATE_AVATAR]);
-
+        
         if ($this->request->isAjax) {
-            $model->uploadFile = UploadedFile::getInstance($model, 'uploadFile');
+            $model = new UpdateUserForm(['scenario' => UpdateUserForm::SCENARIO_UPDATE_INFO]);
+            $model->attributes = Users::findOne(['id' => Yii::$app->user->id])->toArray();
 
-            $model->updateAvatar();
+            if ($this->request->isPost && $model->load($this->request->post()) && $model->updateInfo()) {
+                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                return [
+                    'success' => true,
+                    'login' => Html::encode($model->login),
+                ];
+            }
+
+            return $this->renderAjax('/user/_info-form', [
+                'model' => $model,
+            ]);
         }
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-            'model' => $model,
+        return $this->redirect('index');
+    }
+
+    public function actionChangePassword()
+    {
+        if ($this->request->isAjax) {
+            $model = new UpdateUserForm(['scenario' => UpdateUserForm::SCENARIO_CHANGE_PASSWORD]);
+
+            if ($this->request->isPost && $model->load($this->request->post()) && $model->changePassword()) {
+                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                return [
+                    'success' => true,
+                ];
+            }
+
+            return $this->renderAjax('/user/_password-form', [
+                'model' => $model,
+            ]);
+        }
+
+        return $this->redirect('index');
+    }
+
+    public function actionUser()
+    {
+        $model = new UpdateUserForm();
+
+        return $this->renderAjax('/user/_user', [
+            'model' => Yii::$app->user->identity,
+            'modelForm' => $model
         ]);
     }
 

@@ -13,16 +13,7 @@ use yii\bootstrap5\Modal;
 <div class="account-user my-5 row g-0 gap-4">
     <div class="user-avatar col-6 col-md-3 d-flex flex-column gap-2">
         <?= Html::img('/' . ($model?->avatar ? $model->avatar->url : Yii::getAlias('@defaultAvatar')), ['class' => 'avatar img-thumbnail object-fit-cover', 'alt' => 'Аватарка']); ?>
-        <?php Modal::begin([
-            'id' => 'modal-update-avatar',
-            'title' => 'Изменение аватара',
-            'toggleButton' => ['label' => 'Изменить аватар', 'class' => 'btn btn-primary', 'type' => 'button'],
-            'size' => Modal::SIZE_LARGE,
-        ]); ?>
-            <?= $this->render('_avatar-form', [
-                'model' => $modelForm
-            ])?>
-        <?php Modal::end(); ?>
+        <?= Html::a('Изменить аватар', ['update-avatar'], ['class' => 'btn btn-primary btn-update-avatar', 'data' => ['pjax' => 0]]); ?>
     </div>
     <div class="card col-md col-12">
         <div class="card-body d-flex flex-column gap-3">
@@ -50,23 +41,43 @@ use yii\bootstrap5\Modal;
                 <div class="row g-0 gap-3 gap-md-5 flex-wrap">
                     <div class="col-md row g-0 gap-2">
                         <span class="text-secondary col-auto">Дата регистрации: </span>
-                        <span class="col m-0"><?= Yii::$app->formatter->asDate($model->registered_at, 'long'); ?></span>
+                        <span class="col m-0"><?= Yii::$app->formatter->asDate($model->registered_at, 'dd.MM.yyyy'); ?></span>
                     </div>
                 </div>
             </div>
             <div class="d-flex gap-2 flex-wrap  justify-content-md-end">
-                <?php Modal::begin([
-                    'id' => 'modal-update-info',
-                    'title' => 'Изменение личную инфорацию',
-                    'toggleButton' => ['label' => 'Изменить личную инфорацию', 'class' => 'btn btn-primary', 'type' => 'button'],
-                    'size' => Modal::SIZE_LARGE,
-                ]); ?>
-                    <?= $this->render('_info-form', [
-                        'model' => $model
-                    ])?>
-                <?php Modal::end(); ?>
-                <?= Html::button('Изменить пароль', ['class' => 'btn btn-primary']); ?>
+                <?= Html::a('Изменить личную информацию', ['update-info'], ['class' => 'btn btn-primary btn-update-info', 'data' => ['pjax' => 0]]); ?>
+                <?= Html::a('Изменить пароль', ['change-password'], ['class' => 'btn btn-primary btn-change-password', 'data' => ['pjax' => 0]]); ?>
             </div>
         </div>
     </div>
 </div>
+
+<?php 
+
+Modal::begin([
+    'id' => 'modal-update-avatar',
+    'title' => 'Изменение аватара',
+    'size' => Modal::SIZE_LARGE,
+]);
+
+Modal::end(); 
+
+Modal::begin([
+    'id' => 'modal-update-info',
+    'title' => 'Изменение личной инфорации',
+    'size' => Modal::SIZE_LARGE,
+]);
+
+Modal::end(); 
+
+Modal::begin([
+    'id' => 'modal-change-password',
+    'title' => 'Изменение пароля',
+    'size' => Modal::SIZE_LARGE,
+]);
+
+Modal::end(); 
+
+
+?>

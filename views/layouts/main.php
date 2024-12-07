@@ -48,7 +48,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
             ['label' => 'Вход', 'url' => ['/site/login'], 'linkOptions' => ['class' => 'btn btn-dark px-3'], 'visible' => Yii::$app->user->isGuest],
             !Yii::$app->user->isGuest 
             ? [
-                'label' => Html::img('/' . (Yii::$app->user->identity?->avatar ? Yii::$app->user->identity->avatar->url : Yii::getAlias('@defaultAvatar')), ['class' => 'avatar-cicle object-fit-cover', 'alt' => 'Аватарка']) . Yii::$app->user->identity->login,
+                'label' => Html::img('/' . (Yii::$app->user->identity?->avatar ? Yii::$app->user->identity->avatar->url : Yii::getAlias('@defaultAvatar')), ['class' => 'avatar-cicle object-fit-cover', 'alt' => 'Аватарка']) . '<span class=\'user-login\'>' . Yii::$app->user->identity->login . '</span>',
                 'items' => [
                     ['label' => 'Личный кабинет', 'url' => '/account', 'linkOptions' => ['class' => 'btn btn-dark px-3']],
                     '-',

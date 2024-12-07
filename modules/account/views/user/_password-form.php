@@ -12,16 +12,16 @@ use yii\widgets\Pjax;
 
 ?>
 
-<div class="update-info-cnt">
+<div class="change-password-cnt">
 
     <?php Pjax::begin([
-        'id' => 'pjax-update-info',
+        'id' => 'pjax-change-password',
         'enablePushState' => false,
         'timeout' => 10000,
     ]); ?>
         <?php $form = ActiveForm::begin([
-            'id' => 'update-info-form',
-            'action' => ['update-info'],
+            'id' => 'change-password-form',
+            'action' => ['change-password'],
             'fieldConfig' => [
                 'template' => "{label}\n{input}\n{error}",
                 'labelOptions' => ['class' => 'col-lg-7 col-form-label mr-lg-3'],
@@ -33,18 +33,13 @@ use yii\widgets\Pjax;
             ]
         ]); ?>
 
-            <?= $form->field($model, 'name')->textInput() ?>
-            <?= $form->field($model, 'surname')->textInput() ?>
-            <?= $form->field($model, 'patronymic')->textInput() ?>
-            <?= $form->field($model, 'email')->textInput() ?>
-            <?= $form->field($model, 'phone')->widget(\yii\widgets\MaskedInput::class, [
-                'mask' => '+7(999)-999-99-99',
-            ]) ?>   
-            <?= $form->field($model, 'login')->textInput() ?>
+            <?= $form->field($model, 'old_password')->passwordInput() ?>
+            <?= $form->field($model, 'new_password')->passwordInput() ?>
+            <?= $form->field($model, 'password_repeat')->passwordInput() ?>
 
             <div class="d-flex flex-wrap gap-2 justify-content-between mt-3">
                 <?= Html::button('Назад', ['class' => 'btn btn-info', 'data-bs-dismiss' => 'modal']) ?>
-                <?= Html::submitButton('Изменить личную информацию', ['class' => 'btn btn-success']) ?>
+                <?= Html::submitButton('Изменить пароль', ['class' => 'btn btn-success']) ?>
             </div>
 
         <?php ActiveForm::end(); ?>
