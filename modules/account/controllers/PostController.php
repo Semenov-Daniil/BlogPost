@@ -3,6 +3,8 @@
 namespace app\modules\account\controllers;
 
 use app\models\Posts;
+use app\models\Statuses;
+use app\models\Themes;
 use app\models\Users;
 use app\modules\account\models\UpdateUserForm;
 use app\modules\account\models\PostsSearch;
@@ -52,7 +54,9 @@ class PostController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'model' => $model
+            'model' => $model,
+            'themes' => Themes::getThemes(),
+            'stylesStatuses' => Statuses::getStylesStatus(),
         ]);
     }
 
@@ -132,6 +136,35 @@ class PostController extends Controller
         return $this->renderAjax('/user/_user', [
             'model' => Yii::$app->user->identity,
             'modelForm' => $model
+        ]);
+    }
+
+    /**
+     * Displays a single Posts model.
+     * @param int $id ID
+     * @return string
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionModeration($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($model->statuses_id == Statuses::getStatus('Редактирование')) {
+            $model->statuses_id = Statuses::getStatus('На модерации');
+            $model->save(false);
+        }
+
+        $searchModel = new PostsSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
+        $model = new UpdateUserForm();
+        $model->attributes = Users::findOne(['id' => Yii::$app->user->id])->toArray();
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'model' => $model,
+            'themes' => Themes::getThemes(),
+            'stylesStatuses' => Statuses::getStylesStatus(),
         ]);
     }
 

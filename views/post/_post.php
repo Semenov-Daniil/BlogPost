@@ -1,5 +1,6 @@
 <?php
 
+use app\models\Statuses;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\Modal;
 
@@ -23,7 +24,7 @@ use yii\bootstrap5\Modal;
             <div class="d-flex gap-2 flex-wrap">
                 <?= Html::a('Читать пост', ['/post/view', 'id' => $model->id], ['class' => 'btn btn-primary']); ?>
 
-                <?php if (Yii::$app->user->can('updateOwnPost', ['post' => $model])): ?>
+                <?php if (Yii::$app->user->can('updateOwnPost', ['post' => $model]) && ($model->statuses_id == Statuses::getStatus('Редактирование') || $model->statuses_id == Statuses::getStatus('Одобрен'))): ?>
                     <?= Html::a('Редактировать', ['/post/update', 'id' => $model->id], ['class' => 'btn btn-warning']); ?>
                 <?php endif; ?>
 

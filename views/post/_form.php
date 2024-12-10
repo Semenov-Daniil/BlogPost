@@ -31,7 +31,7 @@ $this->registerJsFile('js/createPost.js', ['depends' => YiiAsset::class]);
                 'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
             ],
             'options' => [
-                ['enctype' => 'multipart/form-data'],
+                'enctype' => 'multipart/form-data',
                 'data' => ['pjax' => true]
             ]
         ]); ?>

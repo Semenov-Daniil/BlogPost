@@ -63,5 +63,20 @@ class Statuses extends \yii\db\ActiveRecord
     public static function getStatus(string $title): int|null
     {
         return self::findOne(['title' => $title])?->id;
+    }
+
+    /**
+     * Gets styles statuses.
+     *
+     * @return array
+     */
+    public static function getStylesStatus(): array
+    {
+        return [
+            'Редактирование' => 'text-bg-warning',
+            'Одобрен' => 'text-bg-success',
+            'Запрещен' => 'text-bg-danger',
+            'На модерации' => 'text-bg-info',
+        ];
     } 
 }

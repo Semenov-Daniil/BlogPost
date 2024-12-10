@@ -34,8 +34,10 @@ class Posts extends \yii\db\ActiveRecord
     public $uploadFile;
     public string|null $pathFile = null;
     public string $theme = '';
+    public string $status = '';
     public bool $check = false;
     public string $author = '';
+    public int $countComments = 0;
 
     public function behaviors()
     {

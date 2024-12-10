@@ -227,8 +227,7 @@ class PostController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->deletePost();
-
-        return $this->goBack();
+        // return $this->goBack();
     }
 
     /**

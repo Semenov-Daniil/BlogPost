@@ -1,6 +1,7 @@
 <?php
 
 use app\models\Reactions;
+use app\models\Statuses;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Modal;
 use yii\helpers\Html;
@@ -47,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ])?>
             <?php if ($updateOwnPost || $deletePost): ?>
             <div class="post-action d-flex gap-2 flex-wrap mt-4">
-                <?php if ($updateOwnPost): ?>
+                <?php if ($updateOwnPost && ($model->statuses_id == Statuses::getStatus('Редактирование') || $model->statuses_id == Statuses::getStatus('Одобрен'))): ?>
                     <?= Html::a('Редактировать', ['update', 'id' => $model->id], ['class' => 'btn btn-warning']); ?>
                 <?php endif; ?>
 
