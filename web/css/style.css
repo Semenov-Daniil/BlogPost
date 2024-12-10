@@ -1,3 +1,7 @@
+#main {
+    animation: showPage 0.5s ease;
+}
+
 .avatar-cicle {
     width: 2rem;
     height: 2rem;
@@ -10,7 +14,7 @@
 }
 
 .is-invalid {
-    animation: isInvalid .4s ease-in-out;
+    animation: isInvalid .4s ease forwards;
 }
 
 .invalid-feedback {
@@ -24,6 +28,14 @@
 @keyframes isInvalid {
     0%, 100% {
         transform: translateY(0px);
+
+        box-shadow: 0px 0px 0px 0.25rem rgba(255, 53, 69, 0.25),
+                inset 0px 0px 0px 0.1rem rgba(255, 53, 69, 0.1);
+    }
+
+    50% {
+        box-shadow: 0px 0px 5px 0.5rem rgba(255, 53, 69, 0.25),
+                inset 0px 0px 5px 0.1rem rgba(255, 53, 69, 0.1);
     }
 
     25% {
@@ -54,7 +66,17 @@
     }
 
     50% {
-        box-shadow: 0px 0px 10px 0.5rem rgba(0, 255, 136, 0.25),
+        box-shadow: 0px 0px 5px 0.5rem rgba(0, 255, 136, 0.25),
                 inset 0px 0px 5px 0.1rem rgba(0, 255, 136, 0.1);
+    }
+}
+
+@keyframes showPage {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
     }
 }
