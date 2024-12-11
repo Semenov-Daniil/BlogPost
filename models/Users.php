@@ -184,6 +184,16 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
+     * Gets query for [[UsersBlocks]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUsersBlocks()
+    {
+        return $this->hasMany(UsersBlocks::class, ['users_id' => 'id']);
+    }
+
+    /**
      * Finds an identity by the given ID.
      *
      * @param string|int $id the ID to be looked for

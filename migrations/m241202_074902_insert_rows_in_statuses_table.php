@@ -7,7 +7,7 @@ use yii\db\Migration;
  */
 class m241202_074902_insert_rows_in_statuses_table extends Migration
 {
-    const TABLE_NAME = '{{%roles}}';
+    const TABLE_NAME = '{{%statuses}}';
     const ADMIN = 'admin';
     const AUTHOR = 'author';
 

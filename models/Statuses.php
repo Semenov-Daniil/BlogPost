@@ -79,4 +79,13 @@ class Statuses extends \yii\db\ActiveRecord
             'На модерации' => 'text-bg-info',
         ];
     } 
+
+    public static function getStatuses()
+    {
+        return self::find()
+            ->select('title')
+            ->indexBy('id')
+            ->column()
+        ;
+    }
 }

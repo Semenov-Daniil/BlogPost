@@ -1,7 +1,8 @@
 <?php
 
-namespace app\models;
+namespace app\modules\admin\models;
 
+use app\models\Users;
 use Yii;
 use yii\base\Model;
 
@@ -11,13 +12,12 @@ use yii\base\Model;
  * @property-read Users|null $user
  *
  */
-class LoginForm extends Model
+class BlockForm extends Model
 {
-    public string $login = '';
-    public string $password = '';
+    public string $date = '';
+    public string $time = '';
 
     private $_user = false;
-
 
     /**
      * @return array the validation rules.
@@ -25,8 +25,8 @@ class LoginForm extends Model
     public function rules()
     {
         return [
-            [['login', 'password'], 'required'],
-            ['password', 'validatePassword'],
+            [['date', 'time'], 'required'],
+            // ['password', 'validatePassword'],
         ];
     }
 

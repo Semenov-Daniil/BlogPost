@@ -40,7 +40,7 @@ $this->registerJsFile('/js/searchPosts.js', ['depends' => YiiAsset::class]);
         <div class="cnt-filter col-12 col-lg-8 col-xl-6 d-flex flex-wrap gap-4 align-items-end">
             <?php echo $this->render('_search', ['model' => $searchModel, 'themes' => $themes]); ?>
             <div>
-                <?= Html::a('Сброс', ['index'], ['class' => 'btn btn-outline-secondary'])?>
+                <?= Html::a('Сброс', ['index'], ['class' => 'btn btn-outline-secondary', 'data' => ['pjax' => 0]])?>
             </div>
         </div>
     </div>

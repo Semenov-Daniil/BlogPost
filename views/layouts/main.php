@@ -50,7 +50,8 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
             ? [
                 'label' => Html::img('/' . (Yii::$app->user->identity?->avatar ? Yii::$app->user->identity->avatar->url : Yii::getAlias('@defaultAvatar')), ['class' => 'avatar-cicle object-fit-cover', 'alt' => 'Аватарка']) . '<span class=\'user-login\'>' . Yii::$app->user->identity->login . '</span>',
                 'items' => [
-                    ['label' => 'Личный кабинет', 'url' => '/account', 'linkOptions' => ['class' => 'btn btn-dark px-3']],
+                    ['label' => 'Личный кабинет', 'url' => '/account', 'linkOptions' => ['class' => 'btn btn-dark px-3'], 'visible' => Yii::$app->user->can('author')],
+                    ['label' => 'Панель администратора', 'url' => '/panel-admin', 'linkOptions' => ['class' => 'btn btn-dark px-3'], 'visible' => Yii::$app->user->can('admin')],
                     '-',
                     ['label' => 'Выход', 'url' => ['/site/logout'], 'linkOptions' => ['class' => 'btn btn-dark px-3', 'data' => ['method' => 'post']]],
                 ],

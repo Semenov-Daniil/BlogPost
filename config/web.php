@@ -77,6 +77,10 @@ $config = [
             'class' => 'app\modules\account\Module',
             'defaultRoute' => 'post'
         ],
+        'panel-admin' => [
+            'class' => 'app\modules\admin\Module',
+            'defaultRoute' => 'post'
+        ],
     ],
     'params' => $params,
 ];
