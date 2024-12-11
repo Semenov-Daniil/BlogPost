@@ -3,6 +3,9 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "bp_users_blocks".
@@ -15,8 +18,21 @@ use Yii;
  *
  * @property Users $users
  */
-class UsersBlocks extends \yii\db\ActiveRecord
+class UsersBlocks extends ActiveRecord
 {
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['blocked_at'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -31,7 +47,7 @@ class UsersBlocks extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['users_id', 'blocked_at', 'unblocked_at'], 'required'],
+            [['users_id', 'unblocked_at', 'comment'], 'required'],
             [['comment'], 'string'],
             [['users_id'], 'integer'],
             [['blocked_at', 'unblocked_at'], 'safe'],
@@ -46,9 +62,10 @@ class UsersBlocks extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'users_id' => 'Users ID',
-            'blocked_at' => 'Blocked At',
-            'unblocked_at' => 'Unblocked At',
+            'users_id' => 'Пользователь',
+            'blocked_at' => 'Заблогирован в',
+            'unblocked_at' => 'Заблокирован до',
+            'comment' => 'Причина блокировки',
         ];
     }
 

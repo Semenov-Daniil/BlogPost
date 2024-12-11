@@ -34,9 +34,15 @@ use yii\widgets\Pjax;
             ]
         ]); ?>
 
-        <?= $form->field($model, 'date')->textInput(['type' => 'date', 'min' => date('Y-m-d'), 'value' => date('Y-m-d')]) ?>
+        <div class="row">
+            <div class="col-lg col-12">
+                <?= $form->field($model, 'date')->textInput(['type' => 'date', 'min' => date('Y-m-d'), 'value' => date('Y-m-d')]) ?>
+            </div>
+            <div class="col-lg col-12">
+                <?= $form->field($model, 'time')->textInput(['type' => 'time']) ?>
+            </div>
+        </div>
 
-        <?= $form->field($model, 'time')->textInput(['type' => 'time']) ?>
 
         <?= $form->field($model, 'comment')->textarea(['rows' => 6]) ?>
 

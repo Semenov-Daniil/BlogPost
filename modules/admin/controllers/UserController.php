@@ -51,7 +51,7 @@ class UserController extends Controller
 
     public function actionTemporaryBlock($id)
     {
-        $model = new UsersBlocks();
+        $model = new BlockForm();
 
         if ($this->request->isAjax) {
             return $this->renderAjax('_block-form', [

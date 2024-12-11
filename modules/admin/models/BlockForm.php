@@ -16,6 +16,7 @@ class BlockForm extends Model
 {
     public string $date = '';
     public string $time = '';
+    public string $comment = '';
 
     private $_user = false;
 
@@ -25,8 +26,10 @@ class BlockForm extends Model
     public function rules()
     {
         return [
-            [['date', 'time'], 'required'],
-            // ['password', 'validatePassword'],
+            [['date', 'time', 'comment'], 'required'],
+            [['date'], 'date', 'min' => date('Y-m-d'), 'format' => 'php:Y-m-d'],
+            [['time'], 'time'],
+            ['time', 'validateTime'],
         ];
     }
 
@@ -36,40 +39,28 @@ class BlockForm extends Model
     public function attributeLabels()
     {
         return [
-            'login' => 'Логин',
-            'password' => 'Пароль',
+            'date' => 'Дата блокировки',
+            'time' => 'Время блокировки',
+            'comment' => 'Причина блокировки',
         ];
     }
 
     /**
-     * Validates the password.
-     * This method serves as the inline validation for password.
+     * Validates the time.
      *
      * @param string $attribute the attribute currently being validated
      * @param array $params the additional name-value pairs given in the rule
      */
-    public function validatePassword($attribute, $params)
+    public function validateTime($attribute, $params)
     {
         if (!$this->hasErrors()) {
-            $user = $this->getUser();
-
-            if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Некорректный «Логин» или «Пароль».');
+            if (strtotime("$this->date $this->time") <= time()) {
+                $this->addError($attribute, 'Увеличьте время или дату блокировки.');
             }
         }
     }
 
-    /**
-     * Logs in a user using the provided login and password.
-     * @return bool whether the user is logged in successfully
-     */
-    public function login()
-    {
-        if ($this->validate()) {
-            return Yii::$app->user->login($this->getUser());
-        }
-        return false;
-    }
+    
 
     /**
      * Finds user by [[login]]
@@ -79,7 +70,7 @@ class BlockForm extends Model
     public function getUser()
     {
         if ($this->_user === false) {
-            $this->_user = Users::findByLogin($this->login);
+            // $this->_user = Users::findByLogin($this->login);
         }
 
         return $this->_user;
