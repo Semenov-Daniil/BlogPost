@@ -6,6 +6,7 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
+use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "bp_users".
@@ -21,14 +22,21 @@ use yii\db\Expression;
  * @property string $auth_key
  * @property int $roles_id
  * @property string $registered_at
+ * @property int|null $isBlock
  *
- * @property Avatars $avatar
+ * @property AnswersComments[] $answersComments
+ * @property Avatars[] $avatar
+ * @property Comments[] $comments
+ * @property Posts[] $posts
+ * @property Reactions[] $reactions
  * @property Roles $role
+ * @property UsersBlocks $blocks
  */
 class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
     public $uploadFile = null;
     public string $urlFile = '';
+    public int|null|string $isBlock = null;
 
     const SCENARIO_UPDATE_INFO = 'update-info';
     const SCENARIO_CHANGE_PASSWORD = 'change-password';
@@ -85,7 +93,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return [
             [['name', 'surname', 'login', 'email', 'password', 'phone'], 'required', 'on' => self::SCENARIO_DEFAULT],
             [['roles_id'], 'integer'],
-            [['registered_at'], 'safe'],
+            [['registered_at', 'isBlock'], 'safe'],
             [['name', 'surname', 'patronymic', 'login', 'email', 'password', 'auth_key'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 20],
             [['phone'], 'match', 'pattern' => '/^\+7\([\d]{3}\)\-[\d]{3}(\-[\d]{2}){2}$/i', 'message' => 'Только в формате +7(XXX)-XXX-XX-XX.'],
@@ -97,6 +105,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             ['patronymic', 'filter', 'filter' => function($value) {
                 return is_null($value) ? $value : trim($value);
             }],
+            [['isBlock'], 'default', 'value' => null],
 
             [['name', 'surname', 'login', 'email', 'phone'], 'required', 'on' => self::SCENARIO_UPDATE_INFO],
             [['password'], 'required', 'on' => self::SCENARIO_CHANGE_PASSWORD],
@@ -121,6 +130,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             'roles_id' => 'Роль',
             'registered_at' => 'Зарегистрирован с',
             'uploadFile' => 'Аватар',
+            'isBlock' => 'Статус',
         ];
     }
 
@@ -188,9 +198,12 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getUsersBlocks()
+    public function getBlocks()
     {
-        return $this->hasMany(UsersBlocks::class, ['users_id' => 'id']);
+        return $this->hasMany(UsersBlocks::class, ['users_id' => 'id'])
+            ->orderBy([
+                'blocked_at' => SORT_DESC
+            ]);
     }
 
     /**
@@ -260,25 +273,5 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function validatePassword(string $password): bool
     {
         return Yii::$app->getSecurity()->validatePassword($password, $this->password);
-    }
-
-    /**
-     * Gets whether the user is the author.
-     *
-     * @return bool
-     */
-    public function getIsAuthor(): bool
-    {
-        return $this->roles_id == Roles::getRoles('author');
-    }
-
-    /**
-     * Gets whether the user is the admin.
-     *
-     * @return bool
-     */
-    public function getIsAdmin(): bool
-    {
-        return $this->roles_id == Roles::getRoles('admin');
     }
 }

@@ -6,6 +6,7 @@ use yii\bootstrap5\ActiveForm;
 /** @var yii\web\View $this */
 /** @var app\models\UsersSearch $model */
 /** @var yii\bootstrap5\ActiveForm $form */
+/** @var array $blocksFilter */
 
 ?>
 
@@ -33,6 +34,8 @@ use yii\bootstrap5\ActiveForm;
     <?= $form->field($model, 'id')->textInput(); ?>
 
     <?= $form->field($model, 'login')->textInput(); ?>
+
+    <?= $form->field($model, 'isBlock')->dropDownList($blocksFilter, ['prompt' => 'Все пользователи']); ?>
 
     <?php ActiveForm::end(); ?>
 

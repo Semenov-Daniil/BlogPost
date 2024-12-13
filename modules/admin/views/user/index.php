@@ -11,6 +11,7 @@ use yii\widgets\Pjax;
 /** @var yii\web\View $this */
 /** @var app\modules\admin\models\UsersSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
+/** @var array $blocksFilter */
 
 $this->title = 'Список пользователей';
 $this->params['breadcrumbs'][] = $this->title;
@@ -25,8 +26,8 @@ $this->registerJsFile('/js/blockUsers.js', ['depends' => YiiAsset::class]);
 
     <?php Pjax::begin([
         'id' => 'pjax-admin-users',
-        'enablePushState' => false,
         'timeout' => 10000,
+        'formSelector' => false
     ]); ?>
     
     <div class="cnt-search d-flex flex-wrap gap-4 justify-content-between align-items-end mb-4 mt-4">
@@ -36,9 +37,10 @@ $this->registerJsFile('/js/blockUsers.js', ['depends' => YiiAsset::class]);
                 <?= $dataProvider->sort->link('id', ['class' => 'btn btn-outline-secondary'])?>
             </div>
         </div>
-        <div class="cnt-filter col-12 col-lg-8 col-xl-6 d-flex flex-wrap gap-4 align-items-end">
+        <div class="cnt-filter col-12 col-lg-8 d-flex flex-wrap gap-4 align-items-end">
             <?php echo $this->render('_search', [
                 'model' => $searchModel,
+                'blocksFilter' => $blocksFilter
             ]); ?>
             <div>
                 <?= Html::a('Сброс', ['index'], ['class' => 'btn btn-outline-secondary btn-reset', 'data' => ['pjax' => 0]])?>

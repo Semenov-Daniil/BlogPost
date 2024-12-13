@@ -9,6 +9,8 @@ use app\modules\admin\models\UsersSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\VarDumper;
+use yii\web\Response;
 
 /**
  * UserController implements the CRUD actions for Users model.
@@ -46,18 +48,34 @@ class UserController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'blocksFilter' => $searchModel->getFilterBlocks(),
         ]);
     }
 
     public function actionTemporaryBlock($id)
     {
-        $model = new BlockForm();
+        $model = new BlockForm(['id' => $id]);
 
         if ($this->request->isAjax) {
+
+            if ($this->request->isPost) {
+                if ($model->load($this->request->post()) && $model->tempBlockUser()) {
+                    $this->response->format = Response::FORMAT_JSON;
+                    return [
+                        'success' => true,
+                    ];
+                }
+            }
+
             return $this->renderAjax('_block-form', [
                 'model' => $model
             ]);
         }
+    }
+
+    public function actionUnblock($id)
+    {
+        
     }
 
     /**

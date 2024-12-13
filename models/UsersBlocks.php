@@ -6,6 +6,7 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
+use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "bp_users_blocks".
@@ -13,13 +14,16 @@ use yii\db\Expression;
  * @property int $id
  * @property int $users_id
  * @property string $blocked_at
- * @property string $unblocked_at
+ * @property string|null $unblocked_at
  * @property string $comment
  *
  * @property Users $users
  */
 class UsersBlocks extends ActiveRecord
 {
+    const SCENARIO_TEMP_BLOCK = 'template_block';
+    const SCENARIO_PERM_BLOCK = 'permanens_block';
+
     public function behaviors()
     {
         return [
@@ -47,7 +51,8 @@ class UsersBlocks extends ActiveRecord
     public function rules()
     {
         return [
-            [['users_id', 'unblocked_at', 'comment'], 'required'],
+            [['users_id', 'unblocked_at', 'comment'], 'required', 'on' => self::SCENARIO_TEMP_BLOCK],
+            [['users_id', 'comment'], 'required', 'on' => self::SCENARIO_PERM_BLOCK],
             [['comment'], 'string'],
             [['users_id'], 'integer'],
             [['blocked_at', 'unblocked_at'], 'safe'],
