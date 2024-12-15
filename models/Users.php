@@ -25,7 +25,7 @@ use yii\helpers\VarDumper;
  * @property int|null $isBlock
  *
  * @property AnswersComments[] $answersComments
- * @property Avatars[] $avatar
+ * @property Avatars $avatar
  * @property Comments[] $comments
  * @property Posts[] $posts
  * @property Reactions[] $reactions
@@ -38,6 +38,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public string $urlFile = '';
     public int|null|string $isBlock = null;
     public int|null|string $isPermBlock = null;
+    public string $blockedComment = '';
 
     const SCENARIO_UPDATE_INFO = 'update-info';
     const SCENARIO_CHANGE_PASSWORD = 'change-password';
@@ -161,7 +162,8 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      */
     public function getPosts()
     {
-        return $this->hasMany(Posts::class, ['users_id' => 'id']);
+        return $this->hasMany(Posts::class, ['users_id' => 'id'])
+            ->with('postImage');
     }
 
     /**
@@ -274,5 +276,32 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function validatePassword(string $password): bool
     {
         return Yii::$app->getSecurity()->validatePassword($password, $this->password);
+    }
+
+    public function isBlocked()
+    {
+        $lastBlock = UsersBlocks::findLastBlock($this->id);
+
+        if (!empty($lastBlock)) {
+            $this->blockedComment = $lastBlock->blocked_comment;
+            if ($lastBlock->pre_unblocked_at) {
+                return strtotime($lastBlock->pre_unblocked_at) > time();
+            }
+
+            return is_null($lastBlock->unblocked_at) ? true : strtotime($lastBlock->unblocked_at) > time();
+        }
+
+        return false;
+    }
+
+    public function deletePost()
+    {
+        foreach ($this->posts as $post) {
+            if ($post?->postImage) {
+                unlink($post->postImage->path_image);
+            }
+
+            $post->delete();
+        }
     }
 }

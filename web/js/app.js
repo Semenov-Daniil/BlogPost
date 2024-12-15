@@ -10,5 +10,9 @@ $(() => {
 
     selectResize();
 
-    $(document).on('pjax:end', () => { selectResize() });
+    $(document).on('ajaxComplete', () => { 
+        selectResize();
+    });
+
+    
 })

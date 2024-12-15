@@ -32,7 +32,7 @@ use yii\bootstrap5\Modal;
                 <?php elseif (!$model->isPermBlock): ?>
                     <?= Html::a('Разблокировать', ['unblock', 'id' => $model->id], ['class' => 'btn btn-success btn-unblock', 'data' => ['id' => $model->id, 'pjax' => 0]]); ?>
                 <?php endif; ?>
-                <?= Html::a('Подробнее', ['', 'id' => $model->id], ['class' => 'btn btn-primary', 'data' => ['pjax' => 0]]); ?>
+                <?= Html::a('Подробнее', ['view', 'id' => $model->id], ['class' => 'btn btn-primary', 'data' => ['pjax' => 0]]); ?>
                 </div>
             </div>
         </div>

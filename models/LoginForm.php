@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
+use yii\helpers\Html;
 
 /**
  * LoginForm is the model behind the login form.
@@ -54,6 +55,7 @@ class LoginForm extends Model
             $user = $this->getUser();
 
             if (!$user || !$user->validatePassword($this->password)) {
+                Yii::$app->session->setFlash('error', 'Некорректный «Логин» или «Пароль».');
                 $this->addError($attribute, 'Некорректный «Логин» или «Пароль».');
             }
         }

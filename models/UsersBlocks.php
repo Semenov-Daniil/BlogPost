@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
 use yii\helpers\VarDumper;
@@ -15,7 +16,7 @@ use yii\helpers\VarDumper;
  * @property int $users_id
  * @property string $blocked_at
  * @property string|null $unblocked_at
- * @property string $blocked_blocked_comment 
+ * @property string $blocked_comment 
  * @property string|null $pre_unblocked_at
  * @property string|null $unblocked_comment
  *
@@ -25,6 +26,8 @@ class UsersBlocks extends ActiveRecord
 {
     public string $date = '';
     public string $time = '';
+    public bool $is_active = false;
+    public bool $is_perm_block = false;
 
     const SCENARIO_TEMP_BLOCK = 'template_block';
     const SCENARIO_PERM_BLOCK = 'permanens_block';
@@ -121,6 +124,13 @@ class UsersBlocks extends ActiveRecord
     public static function findLastBlock(string $userId): static|null
     {
         return self::find()
+            ->select([
+                'blocked_at',
+                'unblocked_at',
+                'blocked_comment',
+                'pre_unblocked_at',
+                'unblocked_comment',
+            ])
             ->where(['users_id' => $userId])
             ->orderBy([
                 'blocked_at' => SORT_DESC
@@ -147,6 +157,10 @@ class UsersBlocks extends ActiveRecord
     {
         if ($this->validate()) {
 
+            $user = Users::findOne(['id' => $this->users_id]);
+
+            $user->deletePost();
+
             $this->users_id = $userId;
 
             return $this->save();
@@ -155,7 +169,7 @@ class UsersBlocks extends ActiveRecord
         return false;
     }
 
-    public function unblockUser($userId)
+    public function unblockUser()
     {
         if ($this->validate()) {
             $this->pre_unblocked_at = new Expression('NOW()');
@@ -163,5 +177,43 @@ class UsersBlocks extends ActiveRecord
         }
 
         return false;
+    }
+
+    public static function getListBlockUser($userId)
+    {
+        $query = self::find()
+            ->select([
+                'blocked_at',
+                'unblocked_at',
+                'blocked_comment',
+                'pre_unblocked_at',
+                'unblocked_comment',
+                'is_active' => 'CASE 
+                    WHEN 
+                        (unblocked_at IS NULL OR (pre_unblocked_at IS NULL AND unblocked_at > NOW())) 
+                    THEN 
+                        1 
+                    ELSE 
+                        0 
+                    END
+                ',
+            ])
+            ->where(['users_id' => $userId])
+            ->orderBy([
+                'blocked_at' => SORT_DESC
+            ])
+        ;
+
+        return new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 10
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'blocked_at' => SORT_DESC
+                ]
+            ]
+        ]);
     }
 }

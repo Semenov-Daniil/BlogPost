@@ -11,6 +11,7 @@ use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\Posts;
 use app\models\RegisterForm;
+use app\models\UsersBlocks;
 use yii\helpers\VarDumper;
 use yii\web\UploadedFile;
 
@@ -95,9 +96,29 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($this->request->isAjax) {
-            if ($model->load(Yii::$app->request->post()) && $model->login()) {
-                return $this->goBack()->send();
+            if ($this->request->isPost) {
+                if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+
+                    if ($model->user->isBlocked()) {
+                        $this->response->format = Response::FORMAT_JSON;
+                        return [
+                            'isBlock' => true,
+                            'data' => $this->renderAjax('_info-block', [
+                                'model' => UsersBlocks::findLastBlock($model->user->id),
+                            ])
+                        ];
+                    }
+
+                    if ($model->login()) {
+                        return $this->goBack()->send();
+                    }
+
+                }
             }
+
+            return $this->renderAjax('_form-login', [
+                'model' => $model,
+            ]);
         }
         
         $model->password = '';
