@@ -21,8 +21,8 @@ class UsersSearch extends Users
     {
         return [
             [['id'], 'integer'],
-            [['name', 'surname', 'patronymic', 'login', 'isBlock'], 'safe'],
-            [['isBlock'], 'default', 'value' => null]
+            [['name', 'surname', 'patronymic', 'login', 'isBlock', 'isPermBlock'], 'safe'],
+            [['isBlock', 'isPermBlock'], 'default', 'value' => null]
         ];
     }
 
@@ -61,7 +61,16 @@ class UsersSearch extends Users
                 'login',
                 'isBlock' => 'CASE 
                     WHEN 
-                        users_blocks.users_id IS NOT NULL AND (users_blocks.unblocked_at IS NULL OR users_blocks.unblocked_at > NOW()) 
+                        users_blocks.users_id IS NOT NULL AND users_blocks.pre_unblocked_at IS NULL AND (users_blocks.unblocked_at IS NULL OR users_blocks.unblocked_at > NOW()) 
+                    THEN 
+                        1 
+                    ELSE 
+                        0 
+                    END
+                ',
+                'isPermBlock' => 'CASE 
+                    WHEN 
+                        (users_blocks.users_id IS NOT NULL AND users_blocks.unblocked_at IS NULL)
                     THEN 
                         1 
                     ELSE 

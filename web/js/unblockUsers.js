@@ -1,6 +1,6 @@
 $(() => {
 
-    $('#pjax-admin-users').on('click', '.btn-temp-block, .btn-perm-block', function(event) {
+    $('#pjax-admin-users').on('click', '.btn-unblock', function(event) {
         event.preventDefault();
 
         const collapse = $(`#collapseBlockUser${$(this).data('id')}`);
@@ -17,7 +17,7 @@ $(() => {
         }
     });
 
-    $('#pjax-admin-users').on('beforeSubmit', `.block-user-form`, function(event) {
+    $('#pjax-admin-users').on('beforeSubmit', `.unblock-user-form`, function(event) {
         event.preventDefault();
 
         const form = $(this);
@@ -35,7 +35,7 @@ $(() => {
 
                     $.pjax.reload('#pjax-admin-users');
                 } else {
-                    $(`#pjax-block-${form.data('id')}`).html(data);
+                    $(`#pjax-unblock-${form.data('id')}`).html(data);
                 }
             }
         });
@@ -55,7 +55,6 @@ $(() => {
         }, 500);
     });
 
-    // $('#pjax-admin-users').on('beforeSubmit', '')
 
 
 })

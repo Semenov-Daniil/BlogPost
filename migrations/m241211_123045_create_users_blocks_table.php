@@ -20,7 +20,9 @@ class m241211_123045_create_users_blocks_table extends Migration
             'users_id' => $this->integer()->notNull(),
             'blocked_at' => $this->timestamp()->notNull(),
             'unblocked_at' => $this->timestamp()->notNull(),
-            'comment' => $this->text()->notNull(),
+            'blocked_comment' => $this->text()->notNull(),
+            'pre_unblocked_at' => $this->timestamp()->defaultValue(null),
+            'unblocked_comment' => $this->text()->defaultValue(null),
         ]);
 
         $this->createIndex('idx-users_blocks-users_id', self::TABLE_NAME, 'users_id');

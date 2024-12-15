@@ -25,6 +25,18 @@
     animation: isValid 1s ease forwards;
 }
 
+@media (min-width: 992px) {
+    .border-lg-end {
+        border: none !important;
+        border-right: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
+    }
+
+    .border-lg-start {
+        border: none !important;
+        border-left: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
+    }
+}
+
 @keyframes isInvalid {
     0%, 100% {
         transform: translateY(0px);

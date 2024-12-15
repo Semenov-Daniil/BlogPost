@@ -37,6 +37,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public $uploadFile = null;
     public string $urlFile = '';
     public int|null|string $isBlock = null;
+    public int|null|string $isPermBlock = null;
 
     const SCENARIO_UPDATE_INFO = 'update-info';
     const SCENARIO_CHANGE_PASSWORD = 'change-password';
@@ -93,7 +94,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return [
             [['name', 'surname', 'login', 'email', 'password', 'phone'], 'required', 'on' => self::SCENARIO_DEFAULT],
             [['roles_id'], 'integer'],
-            [['registered_at', 'isBlock'], 'safe'],
+            [['registered_at', 'isBlock', 'isPermBlock'], 'safe'],
             [['name', 'surname', 'patronymic', 'login', 'email', 'password', 'auth_key'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 20],
             [['phone'], 'match', 'pattern' => '/^\+7\([\d]{3}\)\-[\d]{3}(\-[\d]{2}){2}$/i', 'message' => 'Только в формате +7(XXX)-XXX-XX-XX.'],

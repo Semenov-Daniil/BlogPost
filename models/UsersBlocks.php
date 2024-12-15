@@ -15,14 +15,20 @@ use yii\helpers\VarDumper;
  * @property int $users_id
  * @property string $blocked_at
  * @property string|null $unblocked_at
- * @property string $comment
+ * @property string $blocked_blocked_comment 
+ * @property string|null $pre_unblocked_at
+ * @property string|null $unblocked_comment
  *
  * @property Users $users
  */
 class UsersBlocks extends ActiveRecord
 {
+    public string $date = '';
+    public string $time = '';
+
     const SCENARIO_TEMP_BLOCK = 'template_block';
     const SCENARIO_PERM_BLOCK = 'permanens_block';
+    const SCENARIO_UNBLOCK = 'unblock';
 
     public function behaviors()
     {
@@ -51,12 +57,20 @@ class UsersBlocks extends ActiveRecord
     public function rules()
     {
         return [
-            [['users_id', 'unblocked_at', 'comment'], 'required', 'on' => self::SCENARIO_TEMP_BLOCK],
-            [['users_id', 'comment'], 'required', 'on' => self::SCENARIO_PERM_BLOCK],
-            [['comment'], 'string'],
+            [['blocked_comment', 'unblocked_comment'], 'string'],
             [['users_id'], 'integer'],
-            [['blocked_at', 'unblocked_at'], 'safe'],
+            [['blocked_at', 'unblocked_at', 'pre_unblocked_at'], 'safe'],
             [['users_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['users_id' => 'id']],
+            [['date'], 'date', 'format' => 'php:Y-m-d', 'min' => date('Y-m-d'), 'minString' => date('d.m.Y'), 'message' => '{attribute} должна быть в формате дд.мм.гггг.'],
+            [['time'], 'time'],
+            ['time', 'validateTime'],
+
+            [['date', 'time', 'blocked_comment'], 'required', 'on' => self::SCENARIO_TEMP_BLOCK],
+
+            [['blocked_comment'], 'required', 'on' => self::SCENARIO_PERM_BLOCK],
+
+            [['unblocked_comment'], 'required', 'on' => self::SCENARIO_UNBLOCK],
+
         ];
     }
 
@@ -68,10 +82,30 @@ class UsersBlocks extends ActiveRecord
         return [
             'id' => 'ID',
             'users_id' => 'Пользователь',
-            'blocked_at' => 'Заблогирован в',
+            'blocked_at' => 'Заблокирован в',
             'unblocked_at' => 'Заблокирован до',
-            'comment' => 'Причина блокировки',
+            'blocked_comment' => 'Причина блокировки',
+            'unblocked_comment' => 'Причина разблокировки',
+            'pre_unblocked_at' => 'Разблокирован',
+            'date' => 'Дата блокировки',
+            'time' => 'Время блокировки',
         ];
+    }
+
+    /**
+     * Validates the password.
+     * This method serves as the inline validation for password.
+     *
+     * @param string $attribute the attribute currently being validated
+     * @param array $params the additional name-value pairs given in the rule
+     */
+    public function validateTime($attribute, $params)
+    {
+        if (!$this->hasErrors()) {
+            if (strtotime("$this->date $this->time") <= time()) {
+                $this->addError($attribute, 'Увеличьте дату или время блокировки.');
+            }
+        }
     }
 
     /**
@@ -82,5 +116,52 @@ class UsersBlocks extends ActiveRecord
     public function getUsers()
     {
         return $this->hasOne(Users::class, ['id' => 'users_id']);
+    }
+
+    public static function findLastBlock(string $userId): static|null
+    {
+        return self::find()
+            ->where(['users_id' => $userId])
+            ->orderBy([
+                'blocked_at' => SORT_DESC
+            ])
+            ->limit(1)
+            ->one()
+        ;
+    }
+
+    public function tempBlockUser($userId)
+    {
+        if ($this->validate()) {
+
+            $this->users_id = $userId;
+            $this->unblocked_at = "$this->date $this->time";
+
+            return $this->save();
+        }
+
+        return false;
+    }
+
+    public function permBlockUser($userId)
+    {
+        if ($this->validate()) {
+
+            $this->users_id = $userId;
+
+            return $this->save();
+        }
+
+        return false;
+    }
+
+    public function unblockUser($userId)
+    {
+        if ($this->validate()) {
+            $this->pre_unblocked_at = new Expression('NOW()');
+            return $this->save();
+        }
+
+        return false;
     }
 }

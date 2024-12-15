@@ -18,6 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $this->registerJsFile('/js/searchUsers.js', ['depends' => YiiAsset::class]);
 $this->registerJsFile('/js/blockUsers.js', ['depends' => YiiAsset::class]);
+$this->registerJsFile('/js/unblockUsers.js', ['depends' => YiiAsset::class]);
 
 ?>
 <div class="users-index">

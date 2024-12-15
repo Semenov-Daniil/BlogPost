@@ -54,12 +54,33 @@ class UserController extends Controller
 
     public function actionTemporaryBlock($id)
     {
-        $model = new BlockForm(['id' => $id]);
+        $model = new UsersBlocks(['scenario' => UsersBlocks::SCENARIO_TEMP_BLOCK, 'users_id' => $id]);
 
         if ($this->request->isAjax) {
 
             if ($this->request->isPost) {
-                if ($model->load($this->request->post()) && $model->tempBlockUser()) {
+                if ($model->load($this->request->post()) && $model->tempBlockUser($id)) {
+                    $this->response->format = Response::FORMAT_JSON;
+                    return [
+                        'success' => true,
+                    ];
+                }
+            }
+
+            return $this->renderAjax('_block-form', [
+                'model' => $model
+            ]);
+        }
+    }
+
+    public function actionPermanensBlock($id)
+    {
+        $model = new UsersBlocks(['scenario' => UsersBlocks::SCENARIO_PERM_BLOCK, 'users_id' => $id]);
+
+        if ($this->request->isAjax) {
+
+            if ($this->request->isPost) {
+                if ($model->load($this->request->post()) && $model->permBlockUser($id)) {
                     $this->response->format = Response::FORMAT_JSON;
                     return [
                         'success' => true,
@@ -75,7 +96,24 @@ class UserController extends Controller
 
     public function actionUnblock($id)
     {
-        
+        $model = UsersBlocks::findLastBlock($id);
+        $model->scenario = UsersBlocks::SCENARIO_UNBLOCK;
+
+        if ($this->request->isAjax) {
+
+            if ($this->request->isPost) {
+                if ($model->load($this->request->post()) && $model->unblockUser($id)) {
+                    $this->response->format = Response::FORMAT_JSON;
+                    return [
+                        'success' => true,
+                    ];
+                }
+            }
+
+            return $this->renderAjax('_unblock-form', [
+                'model' => $model
+            ]);
+        }
     }
 
     /**
