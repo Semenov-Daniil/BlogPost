@@ -20,6 +20,6 @@ class UpdateOwnPostRule extends Rule
      */
     public function execute($user, $item, $params)
     {
-        return isset($params['author_id'], $params['status_id']) ? ($params['author_id'] == $user && ($params['status_id'] == Statuses::getStatus('Редактирование') || $params['status_id'] == Statuses::getStatus('Одобрен'))) : false;
+        return isset($params['author_id'], $params['status_id']) ? ($params['author_id'] == $user && ($params['status_id'] == Statuses::getIdByTitle('Редактирование') || $params['status_id'] == Statuses::getIdByTitle('Одобрен'))) : false;
     }
 }

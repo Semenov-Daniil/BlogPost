@@ -19,6 +19,6 @@ class IsNotAuthorRule extends Rule
      */
     public function execute($user, $item, $params)
     {
-        return isset($params['post']) ? ($params['author_id'] !== $user) : false;
+        return isset($params['author_id']) ? ($params['author_id'] !== $user) : false;
     }
 }
