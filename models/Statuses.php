@@ -60,7 +60,7 @@ class Statuses extends \yii\db\ActiveRecord
      * @param string $title
      * @return int|null
      */
-    public static function getStatus(string $title): int|null
+    public static function getIdByTitle(string $title): int|null
     {
         return self::findOne(['title' => $title])?->id;
     }

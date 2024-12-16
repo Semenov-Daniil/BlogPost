@@ -33,11 +33,12 @@ class Posts extends \yii\db\ActiveRecord
 {
     public $uploadFile;
     public string|null $pathFile = null;
+    public string $other_theme = '';
+    public bool $check = false;
     public string $theme = '';
     public string $status = '';
-    public bool $check = false;
     public string $author = '';
-    public int $countComments = 0;
+    public int $count_comments = 0;
 
     public function behaviors()
     {
@@ -90,20 +91,17 @@ class Posts extends \yii\db\ActiveRecord
             [['statuses_id'], 'exist', 'skipOnError' => true, 'targetClass' => Statuses::class, 'targetAttribute' => ['statuses_id' => 'id']],
             [['themes_id'], 'exist', 'skipOnError' => true, 'targetClass' => Themes::class, 'targetAttribute' => ['themes_id' => 'id']],
             [['users_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['users_id' => 'id']],
-
             ['themes_id', 'required', 'when' => function($model) {
                 return !$model->check;
             }, 'whenClient' => "function (attribute, value) {
                 return !$('#posts-check').prop('checked');
             }"],
-
-            ['theme', 'required', 'when' => function($model) {
+            ['other_theme', 'required', 'when' => function($model) {
                 return $model->check;
             }, 'whenClient' => "function (attribute, value) {
                 return $('#posts-check').prop('checked');
             }"],
-
-            ['theme', 'filter', 'filter' => [$this, 'normalizeTheme']]
+            ['other_theme', 'filter', 'filter' => [$this, 'normalizeTheme']]
         ];
     }
 
@@ -119,11 +117,13 @@ class Posts extends \yii\db\ActiveRecord
             'text' => 'Текст',
             'users_id' => 'Автор',
             'themes_id' => 'Тема',
-            'statuses_id' => 'Статус',
+            'theme' => 'Тема',
+            'statuses_id' => 'Статус ID',
+            'status' => 'Статус',
             'created_at' => 'Создан',
             'updated_at' => 'Обновлен',
             'uploadFile' => 'Изображение',
-            'theme' => 'Своя тема',
+            'other_theme' => 'Своя тема',
             'check' => 'Другая тема',
         ];
     }
@@ -161,7 +161,7 @@ class Posts extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getPostImage()
+    public function getImage()
     {
         return $this->hasOne(PostsImages::class, ['posts_id' => 'id']);
     }
@@ -171,7 +171,7 @@ class Posts extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getStatuses()
+    public function getStatus()
     {
         return $this->hasOne(Statuses::class, ['id' => 'statuses_id']);
     }
@@ -181,7 +181,7 @@ class Posts extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getThemes()
+    public function getTheme()
     {
         return $this->hasOne(Themes::class, ['id' => 'themes_id']);
     }
@@ -201,7 +201,7 @@ class Posts extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getUsers()
+    public function getUser()
     {
         return $this->hasOne(Users::class, ['id' => 'users_id']);
     }
@@ -216,38 +216,68 @@ class Posts extends \yii\db\ActiveRecord
         return $this->hasMany(Reactions::class, ['posts_id' => 'id']);
     }
 
-    public function getLikes()
+    public function getCountLikes()
     {
         return Reactions::find()
             ->where(['posts_id' => $this->id, 'reaction' => 1])
             ->count();
     }
 
-    public function getDislikes()
+    public function getCountDislikes()
     {
         return Reactions::find()
             ->where(['posts_id' => $this->id, 'reaction' => 0])
             ->count();
     }
 
-    public function createNewTheme(): void
+    public function addTheme(): bool
     {
         if ($this->check) { 
-            $theme = Themes::isUniqueTheme('title', $this->theme);
+            $theme = Themes::getIdByTitle($this->other_theme);
 
             if (is_null($theme)) {
                 $theme = new Themes();
-                $theme->title = $this->theme;
+                $theme->title = $this->other_theme;
                 if (!$theme->save()) {
                     $this->addErrors($theme->errors);
                     throw new Exception("Couldn't save a new theme");
+                    return false;
                 }
                 $this->themes_id = $theme->id;
             } else {
                 $this->themes_id = $theme;
-                $this->theme = '';
+                $this->other_theme = '';
                 $this->check = false;
             }
+        }
+
+        return true;
+    }
+
+    public function addImage(): bool
+    {
+        $image = new PostsImages();
+        $image->path_image = $this->pathFile;
+        $image->posts_id = $this->id;
+        if (!$image->save()) {
+            $this->addErrors($image->errors);
+            throw new Exception("Couldn't save a new image.");
+            return false;
+        }
+        
+        return true;
+    }
+
+    public function updateImage(): bool
+    {
+        $image = PostsImages::findImageByPost($this->id);
+
+        if ($image) {
+            $this->deleteFile($image->path_image);
+            $image->path_image = $this->pathFile;
+            return $image->save();
+        } else {
+            return $this->addImage();
         }
     }
 
@@ -259,37 +289,28 @@ class Posts extends \yii\db\ActiveRecord
     public function create(): bool
     {
         if ($this->validate()) {
-            if (is_null($this->uploadFile) || $this->upload()) {
-                $transaction = Yii::$app->db->beginTransaction();
-                try {
-                    $this->statuses_id = Statuses::getStatus('Редактирование');
-                    
-                    $this->createNewTheme();
-                    
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $this->statuses_id = Statuses::getIdByTitle('Редактирование');
+
+                if ($this->addTheme()) {
                     $this->save(false);
-                    
-                    if ($this->pathFile) {
-                        $image = new PostsImages();
-                        $image->path_image = $this->pathFile;
-                        $image->posts_id = $this->id;
-                        if (!$image->save()) {
-                            $this->addErrors($image->errors);
-                            throw new Exception("Couldn't save a new image");
-                        }
+
+                    if (is_null($this->uploadFile) || ($this->uploadImage() && $this->addImage())) {
+                        $transaction->commit();
+                        return true;
                     }
-                    
-                    $transaction->commit();
-                    return true;
-                } catch(\Exception $e) {
-                    $transaction->rollBack();
-                } catch(\Throwable $e) {
-                    $transaction->rollBack();
                 }
+
+                $transaction->rollBack();
+            } catch(\Exception $e) {
+                $transaction->rollBack();
+            } catch(\Throwable $e) {
+                $transaction->rollBack();
             }
         }
 
-
-        $this->deleteFile();
+        $this->deleteFile($this->pathFile);
         return false;
     }
 
@@ -301,46 +322,32 @@ class Posts extends \yii\db\ActiveRecord
     public function updatePost(): bool
     {
         if ($this->validate()) {
-            if (is_null($this->uploadFile) || $this->upload()) {
-                $transaction = Yii::$app->db->beginTransaction();
-                try {
-                    $this->statuses_id = Statuses::getStatus('Редактирование');
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $this->statuses_id = Statuses::getIdByTitle('Редактирование');
 
-                    $this->createNewTheme();
-                    
+                if ($this->addTheme()) {
                     $this->save(false);
-                    
-                    if ($this->pathFile) {
-                        if ($image = PostsImages::findOne(['posts_id' => $this->id])) {
-                            $this->deleteFile();
-                        } else {
-                            $image = new PostsImages();
-                            $image->posts_id = $this->id;
-                        }
 
-                        $image->path_image = $this->pathFile;
-                        
-                        if (!$image->save()) {
-                            $this->addErrors($image->errors);
-                            throw new Exception("Couldn't save a new image");
-                        }
+                    if (is_null($this->uploadFile) || ($this->uploadImage() && $this->updateImage())) {
+                        $transaction->commit();
+                        return true;
                     }
-                    
-                    $transaction->commit();
-                    return true;
-                } catch(\Exception $e) {
-                    $transaction->rollBack();
-                } catch(\Throwable $e) {
-                    $transaction->rollBack();
                 }
+
+                $transaction->rollBack();
+            } catch(\Exception $e) {
+                $transaction->rollBack();
+            } catch(\Throwable $e) {
+                $transaction->rollBack();
             }
         }
 
-        $this->deleteFile();
+        $this->deleteFile($this->pathFile);
         return false;
     }
 
-    public function upload()
+    public function uploadImage()
     {
         if (!is_dir(Yii::getAlias('@posts'))) {
             mkdir(Yii::getAlias('@posts'), 0755, true);
@@ -350,10 +357,10 @@ class Posts extends \yii\db\ActiveRecord
         return $this->uploadFile->saveAs($this->pathFile);
     }
 
-    public function deleteFile(): bool
+    public function deleteFile($path): bool
     {
-        if ($this->pathFile && file_exists($this->pathFile)) {
-            return unlink($this->pathFile);
+        if ($path && file_exists($path)) {
+            return unlink($path);
         }
 
         return true;
@@ -375,21 +382,20 @@ class Posts extends \yii\db\ActiveRecord
                 'updated_at',
                 'path_image as pathFile',
             ])
-            ->joinWith('users', false)
-            ->joinWith('themes', false)
-            ->joinWith('postImage', false)
-            ->where(['statuses_id' => Statuses::getStatus('Одобрен')])
+            ->joinWith('user', false)
+            ->joinWith('theme', false)
+            ->joinWith('image', false)
+            ->where(['statuses_id' => Statuses::getIdByTitle('Одобрен')])
+            ->orderBy([
+                'created_at' => SORT_DESC,
+            ])
             ->limit($limit)
             ;
 
         return new ActiveDataProvider([
             'query' => $query,
             'pagination' => false,
-            'sort' => [
-                'defaultOrder' => [
-                    'created_at' => SORT_DESC,
-                ]
-            ],
+            'sort' => false,
         ]);
     }
 
@@ -397,7 +403,7 @@ class Posts extends \yii\db\ActiveRecord
     {
         $subQuery = Comments::find()
             ->select('COUNT(*)')
-            ->where(['posts_id' => $id])
+            ->where('posts_id=:id', [':id' => $id])
         ;
 
         return self::find()
@@ -414,11 +420,11 @@ class Posts extends \yii\db\ActiveRecord
                 'created_at',
                 'updated_at',
                 'path_image as pathFile',
-                'countComments' => $subQuery
+                'count_comments' => $subQuery
             ])
-            ->joinWith('users', false)
-            ->joinWith('themes', false)
-            ->joinWith('postImage', false)
+            ->joinWith('user', false)
+            ->joinWith('theme', false)
+            ->joinWith('image', false)
             ->where(Posts::tableName() . '.id=:id', [':id' => $id])
             ->one()
         ;
@@ -426,8 +432,8 @@ class Posts extends \yii\db\ActiveRecord
 
     public function deletePost()
     {
-        if ($this->postImage) {
-            $this->postImage->delete();
+        if ($this->image) {
+            $this->image->delete();
         }
 
         $this->delete();

@@ -44,10 +44,13 @@ class PostController extends Controller
                         [
                             'actions' => ['update'],
                             'allow' => true,
-                            'roles' => ['updateOwnPost'],
+                            'roles' => ['updatePost'],
                             'roleParams' => function($rule) {
+                                $post = $this->findModel(Yii::$app->request->get('id'));
+
                                 return [
-                                    'post' => $this->findModel(Yii::$app->request->get('id')),
+                                    'author_id' => $post->users_id,
+                                    'status_id' => $post->statuses_id,
                                 ];
                             },
                         ],
@@ -56,15 +59,12 @@ class PostController extends Controller
                             'allow' => true,
                             'roles' => ['deletePost'],
                             'roleParams' => function($rule) {
-                                if (Yii::$app->user->can('author')) {
-                                    $post = $this->findModel(Yii::$app->request->get('id'));
-    
-                                    return [
-                                        'post' => $post,
-                                        'countComments' => 0,
-                                    ];
-                                }
-                                return null;
+                                $post = $this->findModel(Yii::$app->request->get('id'));
+
+                                return [
+                                    'author_id' => $post->users_id,
+                                    'count_comments' => $post->count_comments,
+                                ];
                             },
                         ],
                         [
@@ -72,14 +72,16 @@ class PostController extends Controller
                             'allow' => true,
                             'roles' => ['reactionPost'],
                             'roleParams' => function($rule) {
+                                $post = $this->findModel(Yii::$app->request->get('postId'));
+
                                 return [
-                                    'post' => $this->findModel(Yii::$app->request->get('postId')),
+                                    'author_id' => $post->users_id,
                                 ];
                             },
                         ]
                     ],
                     'denyCallback' => function ($rule, $action) {
-                        return Yii::$app->user->isGuest ? $this->redirect('/site/login') : $this->redirect('/');
+                        return Yii::$app->user->isGuest ? $this->redirect('/site/login') : $this->redirect('index');
                     }
                 ],
                 'verbs' => [
@@ -90,7 +92,7 @@ class PostController extends Controller
                         'view' => ['GET'],
                         'create' => ['GET', 'POST'],
                         'update' => ['GET', 'POST'],
-                        'reaction' => ['POST'],
+                        'reaction' => ['GET', 'POST'],
                     ],
                 ],
             ]
@@ -104,6 +106,8 @@ class PostController extends Controller
      */
     public function actionIndex()
     {
+        Yii::$app->user->setReturnUrl('/post/index');
+        
         $searchModel = new PostsSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
@@ -127,11 +131,10 @@ class PostController extends Controller
 
         return $this->render('view', [
             'model' => $post,
-            'updateOwnPost' => Yii::$app->user->can('updatePost', ['post' => $post, 'status_id' => $post->statuses_id]),
-            'deletePost' => Yii::$app->user->can('deletePost', ['aithor_id' => $post->users_id, 'count_comments' => $post->countComments]),
+            'updatePost' => Yii::$app->user->can('updatePost', ['author_id' => $post->users_id, 'status_id' => $post->statuses_id]),
+            'deletePost' => Yii::$app->user->can('deletePost', ['author_id' => $post->users_id, 'count_comments' => $post->count_comments]),
             'comment' => new Comments(),
-            'answer' => new AnswersComments(),
-            'commentsDataProvider' => Comments::getComments($id),
+            'dataProviderComments' => Comments::getComments($id),
         ]);
     }
 
@@ -149,8 +152,8 @@ class PostController extends Controller
             Reactions::setReactionPost($postId, $reaction);
 
             return $this->renderAjax('_reactions', [
-                'countLikes' => $post->likes,
-                'countDislikes' => $post->dislikes,
+                'countLikes' => $post->countLikes,
+                'countDislikes' => $post->countDislikes,
                 'activeLike' => Reactions::getLike(Yii::$app->user->id, $post->id),
                 'activeDislike' => Reactions::getDislike(Yii::$app->user->id, $post->id),
                 'postId' => $post->id,
@@ -175,7 +178,7 @@ class PostController extends Controller
                 $model->uploadFile = UploadedFile::getInstance($model, 'uploadFile');
 
                 if ($model->create()) {
-                    return $this->redirect(['view', 'id' => $model->id]);
+                    return $this->redirect(['/account/post/view', 'id' => $model->id]);
                 }
             }
         } else {
@@ -204,7 +207,7 @@ class PostController extends Controller
                 $model->uploadFile = UploadedFile::getInstance($model, 'uploadFile');
 
                 if ($model->updatePost()) {
-                    return $this->redirect(['view', 'id' => $model->id]);
+                    return $this->redirect(['/account/post/view', 'id' => $model->id]);
                 }
             }
         } else {
@@ -227,7 +230,10 @@ class PostController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->deletePost();
-        // return $this->goBack();
+
+        if (!$this->request->post('pjax')) {
+            return $this->goBack();
+        }
     }
 
     /**

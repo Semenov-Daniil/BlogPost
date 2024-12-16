@@ -16,7 +16,7 @@ use yii\widgets\Pjax;
 <div class="post">
     <div class="card">
         <?php if ($model->pathFile): ?>
-            <img src="/<?= $model->pathFile ?>" class="card-img-top object-fit-cover" alt="Изображение поста" style="height: 30rem;">
+            <img src="/<?= $model->pathFile ?>" class="post-img card-img-top object-fit-cover" alt="Изображение поста">
         <?php endif; ?>
         <div class="card-body">
             <div class="mb-3">
@@ -25,7 +25,7 @@ use yii\widgets\Pjax;
             </div>
             <p class="card-text"><?= Html::encode($model->preview); ?></p>
             <div>
-                <?= Html::a('Читать пост', ['/post/view', 'id' => $model->id], ['class' => 'btn btn-primary']); ?>
+                <?= Html::a('Читать пост', ['/post/view', 'id' => $model->id], ['class' => 'btn btn-outline-primary']); ?>
             </div>
         </div>
     </div>

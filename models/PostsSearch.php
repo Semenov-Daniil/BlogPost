@@ -54,10 +54,10 @@ class PostsSearch extends Posts
                 'updated_at',
                 'path_image as pathFile',
             ])
-            ->joinWith('users', false)
-            ->joinWith('themes', false)
-            ->joinWith('postImage', false)
-            ->where(['statuses_id' => Statuses::getStatus('Одобрен')])
+            ->joinWith('user', false)
+            ->joinWith('theme', false)
+            ->joinWith('image', false)
+            ->where(['statuses_id' => Statuses::getIdByTitle('Одобрен')])
         ;
 
         $dataProvider = new ActiveDataProvider([

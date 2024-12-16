@@ -3,6 +3,7 @@
 use app\models\Posts;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\LinkPager;
+use yii\bootstrap5\Modal;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\web\YiiAsset;
@@ -12,12 +13,13 @@ use yii\widgets\Pjax;
 /** @var app\models\PostsSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 /** @var app\models\Themes $themes */
-/** @var $deletePost */
+/** @var bool $deletePost */
 
 $this->title = 'Посты';
 $this->params['breadcrumbs'][] = $this->title;
 
-$this->registerJsFile('/js/searchPosts.js', ['depends' => YiiAsset::class]);
+$this->registerJsFile('js/searchPosts.js', ['depends' => YiiAsset::class]);
+$this->registerJsFile('js/deletePostPjax.js', ['depends' => YiiAsset::class]);
 
 ?>
 <div class="posts-index">
@@ -34,13 +36,16 @@ $this->registerJsFile('/js/searchPosts.js', ['depends' => YiiAsset::class]);
         <div class="cnt-sorts">
             <p>Сортировка</p>
             <div class="sort-links d-flex flex-wrap gap-4">
-                <?= $dataProvider->sort->link('created_at', ['label' => 'Дата и время создания', 'class' => 'btn btn-outline-secondary'])?>
+                <?= $dataProvider->sort->link('created_at', ['label' => 'Дата создания', 'class' => 'btn btn-outline-secondary'])?>
             </div>
         </div>
         <div class="cnt-filter col-12 col-lg-8 col-xl-6 d-flex flex-wrap gap-4 align-items-end">
-            <?php echo $this->render('_search', ['model' => $searchModel, 'themes' => $themes]); ?>
+            <?php echo $this->render('_search', [
+                'model' => $searchModel, 
+                'themes' => $themes
+            ]); ?>
             <div>
-                <?= Html::a('Сброс', ['index'], ['class' => 'btn btn-outline-secondary', 'data' => ['pjax' => 0]])?>
+                <?= Html::a('Сброс', ['index'], ['class' => 'btn btn-outline-secondary'])?>
             </div>
         </div>
     </div>
@@ -50,16 +55,20 @@ $this->registerJsFile('/js/searchPosts.js', ['depends' => YiiAsset::class]);
         'layout' => "
             <div>{pager}</div>\n
             <div>{items}</div>\n
-            <div class='mt-4'>{pager}</div>",
+            <div class='mt-4'>{pager}</div>
+        ",
         'itemOptions' => ['class' => 'item mt-4'],
         'itemView' => '_post',
         'viewParams' => [
             'deletePost' => $deletePost,
         ],
         'pager' => [
-            'class' => LinkPager::class],
+            'class' => LinkPager::class
+        ],
     ]) ?>
 
     <?php Pjax::end(); ?>
 
 </div>
+
+<?= $this->render('_modal-delete'); ?>

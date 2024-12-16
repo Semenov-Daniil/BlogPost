@@ -11,7 +11,7 @@ use Yii;
  * @property int $posts_id
  * @property string|null $path_image
  *
- * @property Posts $posts
+ * @property Posts $post
  */
 class PostsImages extends \yii\db\ActiveRecord
 {
@@ -66,8 +66,18 @@ class PostsImages extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getPosts()
+    public function getPost()
     {
         return $this->hasOne(Posts::class, ['id' => 'posts_id']);
+    }
+
+    public static function getIdByPathImage(string $pathImage): int|null
+    {
+        return self::findOne(['path_image' => $pathImage])?->id;
+    }
+
+    public static function findImageByPost(int $postId): static|null
+    {
+        return self::findOne(['posts_id' => $postId]);
     }
 }

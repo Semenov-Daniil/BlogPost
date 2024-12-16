@@ -37,17 +37,6 @@ $(() => {
         });
     });
 
-    $('#pjax-posts').on('click', '.btn-reset', function(event) {
-        event.preventDefault();
-
-        $.pjax.reload({
-            container: '#pjax-posts',
-            url: $(this).attr('href'),
-            push: false,
-            timeout: 5000,
-        });
-    });
-
     $('#pjax-user-posts').on('input', '#postssearch-title', function(event) {
         let url = new URL(window.location);
         url.searchParams.set('PostsSearch[title]', $(this).val());

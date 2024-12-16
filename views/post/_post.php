@@ -6,14 +6,14 @@ use yii\bootstrap5\Modal;
 
 /** @var yii\web\View $this */
 /** @var app\models\Posts $model */
-/** @var $deletePost */
+/** @var bool $deletePost */
 
 ?>
 
 <div class="post">
     <div class="card">
         <?php if ($model->pathFile): ?>
-            <img src="/<?= $model->pathFile ?>" class="card-img-top object-fit-cover" alt="Изображение поста" style="height: 30rem;">
+            <img src="/<?= $model->pathFile ?>" class="card-img-top object-fit-cover post-img" alt="Изображение поста">
         <?php endif; ?>
         <div class="card-body">
             <div class="mb-3">
@@ -22,31 +22,15 @@ use yii\bootstrap5\Modal;
             </div>
             <p class="card-text"><?= Html::encode($model->preview); ?></p>
             <div class="d-flex gap-2 flex-wrap">
-                <?= Html::a('Читать пост', ['/post/view', 'id' => $model->id], ['class' => 'btn btn-primary']); ?>
+                <?= Html::a('Читать пост', ['view', 'id' => $model->id], ['class' => 'btn btn-outline-info']); ?>
 
-                <?php if (Yii::$app->user->can('updateOwnPost', ['post' => $model]) && ($model->statuses_id == Statuses::getStatus('Редактирование') || $model->statuses_id == Statuses::getStatus('Одобрен'))): ?>
-                    <?= Html::a('Редактировать', ['/post/update', 'id' => $model->id], ['class' => 'btn btn-warning']); ?>
+                <?php if (Yii::$app->user->can('updatePost', ['author_id' => $model->users_id, 'status_id' => $model->statuses_id])): ?>
+                    <?= Html::a('Редактировать', ['update', 'id' => $model->id], ['class' => 'btn btn-outline-warning']); ?>
                 <?php endif; ?>
 
                 <?php if ($deletePost): ?>
-                    <?php
-                        Modal::begin([
-                            'title' => 'Удаление поста',
-                            'toggleButton' => ['label' => 'Удалить', 'class' => 'btn btn-danger'],
-                            'bodyOptions' => ['class' => 'py-4'],
-                            'footer' => Html::a('Удалить', ['/post/delete', 'id' => $model->id], [
-                                'class' => 'btn btn-danger',
-                                'data' => ['method' => 'post'],
-                            ]),
-                            'options' => ['class' => 'user-select-none']
-                        ]);
-                        
-                        echo 'Вы точно хотите удалить пост: ' . Html::encode($model->title) . '?';
-
-                        Modal::end();
-                    ?>
+                    <?= Html::a('Удалить', ['delete', 'id' => $model->id], ['class' => 'btn btn-outline-danger btn-delete', 'data' => ['title' => Html::encode($model->title), 'pjax' => 0]]); ?>
                 <?php endif; ?>
-
             </div>
         </div>
     </div>

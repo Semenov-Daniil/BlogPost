@@ -47,15 +47,15 @@ $this->registerJsFile('js/createPost.js', ['depends' => YiiAsset::class]);
         <?= $form->field($model, 'check', ['options' => ['class' => 'py-1'], 'enableClientValidation' => false])->checkbox(['data-bs-toggle' => "collapse", 'data-bs-target' => "#collapseThemeInput", 'aria-expanded' => ($model->check ? 'true' : 'false'), 'aria-controls' => "collapseThemeInput", "role" => "button"]) ?>
 
         <div class="collapse <?= $model->check ? 'show' : '' ?>" id="collapseThemeInput">
-            <?= $form->field($model, 'theme')->textInput(['maxlength' => true, 'disabled' => !$model->check]) ?>
+            <?= $form->field($model, 'other_theme')->textInput(['maxlength' => true, 'disabled' => !$model->check]) ?>
         </div>
 
         <?= $form->field($model, 'uploadFile')->fileInput() ?>
 
-        <?= $model->postImage?->path_image ? Html::img('/' . $model->postImage->path_image, ['style' => "height: 30rem;", 'class' => 'card-img-top rounded object-fit-cover mb-3']) : '' ?>
+        <?= $model->pathFile ? Html::img("/$model->pathFile", ['class' => 'post-img rounded mb-3 card-img-top object-fit-cover', 'alt' => 'Изображение поста', 'id' => 'imagePost']) : ''?>
         
         <div class="form-group">
-            <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
+            <?= Html::submitButton('Сохранить', ['class' => 'btn btn-outline-success']) ?>
         </div>
 
         <?php ActiveForm::end(); ?>

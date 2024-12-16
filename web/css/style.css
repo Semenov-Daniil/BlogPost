@@ -6,6 +6,15 @@
     width: 2rem;
     height: 2rem;
     border-radius: 100%;
+    object-fit: cover;
+}
+
+.avatar-cicle-xl {
+    width: 20rem;
+    height: 20rem;
+    border-radius: 100%;
+    object-fit: cover;
+    border: 1px solid var(--bs-secondary-color);
 }
 
 .user-avatar .avatar {
@@ -27,6 +36,16 @@
 
 .alert {
     animation: showAlert 0.5s ease;
+}
+
+.post-img {
+    aspect-ratio: 23/9;
+}
+
+.btn-prev {
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
 }
 
 @media (min-width: 992px) {
@@ -66,7 +85,7 @@
 @keyframes invalidFeedbackShow {
     0% {
         opacity: 0;
-        transform: translateY(-5px);
+        transform: translateY(10px);
     }
 
     100% {
