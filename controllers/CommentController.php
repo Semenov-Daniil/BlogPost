@@ -11,6 +11,7 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * CommentController implements the CRUD actions for Comments model.
@@ -34,7 +35,7 @@ class CommentController extends Controller
                             'roles' => ['createComment'],
                             'roleParams' => function($rule) {
                                 return [
-                                    'post' => Posts::find()->select('users_id')->where(['id' => Yii::$app->request->get('postId')]),
+                                    'author_id' => $this->findModelPost(Yii::$app->request->get('postId')),
                                 ];
                             },
                         ],
@@ -44,7 +45,7 @@ class CommentController extends Controller
                             'roles' => ['createAnswer'],
                             'roleParams' => function($rule) {
                                 return [
-                                    'post' => Posts::find()->select('users_id')->where(['id' => Yii::$app->request->get('postId')])->one(),
+                                    'author_id' => $this->findModelPost(Yii::$app->request->get('postId')),
                                 ];
                             },
                         ],
@@ -64,7 +65,7 @@ class CommentController extends Controller
                         'delete' => ['POST'],
                         'answer-delete' => ['POST'],
                         'create' => ['POST'],
-                        'create-answer' => ['POST'],
+                        'create-answer' => ['GET', 'POST'],
                     ],
                 ],
             ]
@@ -86,11 +87,10 @@ class CommentController extends Controller
             }
         }
 
-        return $this->renderAjax('/post/_comments', [
+        return $this->renderAjax('_comments', [
             'comment' => $model,
-            'answer' => new AnswersComments(),
-            'post' => Posts::find()->select('id', 'users_id')->where(['id' => $postId])->one(),
-            'commentsDataProvider' => Comments::getComments($postId),
+            'post' => $this->findModelPost($postId),
+            'dataProviderComments' => Comments::getComments($postId),
         ]);
     }
 
@@ -101,20 +101,25 @@ class CommentController extends Controller
      */
     public function actionCreateAnswer($commentId, $postId)
     {
-        $model = new AnswersComments();
+        $model = new Comments();
 
         if ($this->request->isAjax) {
-            if ($model->load($this->request->post()) && $model->createComment($commentId)) {
-                $model->answer = '';
-            }
-        }
 
-        return $this->renderAjax('/post/_comments', [
-            'comment' => new Comments(),
-            'answer' => $model,
-            'post' => Posts::find()->select('id', 'users_id')->where(['id' => $postId])->one(),
-            'commentsDataProvider' => Comments::getComments($postId),
-        ]);
+            if ($this->request->isPost) {
+                if ($model->load($this->request->post()) && $model->createAnswerComment($commentId, $postId)) {
+                    $model->comment = '';
+
+                    return $this->asJson([
+                        'success' => true,
+                    ]);
+                }
+            }
+
+            return $this->renderAjax('_form-answer-comment', [
+                'model' => $model,
+                'commentId' => $commentId,
+            ]);
+        }
     }
 
     /**
@@ -130,7 +135,6 @@ class CommentController extends Controller
 
         return $this->renderAjax('/post/_comments', [
             'comment' => new Comments(),
-            'answer' => new AnswersComments(),
             'post' => Posts::find()->select('id', 'users_id')->where(['id' => $postId])->one(),
             'commentsDataProvider' => Comments::getComments($postId),
         ]);
@@ -149,7 +153,6 @@ class CommentController extends Controller
 
         return $this->renderAjax('/post/_comments', [
             'comment' => new Comments(),
-            'answer' => new AnswersComments(),
             'post' => Posts::find()->select('id', 'users_id')->where(['id' => $postId])->one(),
             'commentsDataProvider' => Comments::getComments($postId),
         ]);
@@ -171,16 +174,9 @@ class CommentController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    /**
-     * Finds the Comments model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $id ID
-     * @return Comments the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModelAnswer($id)
+    protected function findModelPost($id)
     {
-        if (($model = AnswersComments::findOne(['id' => $id])) !== null) {
+        if (($model = Posts::getPost($id)) !== null) {
             return $model;
         }
 

@@ -22,6 +22,7 @@ class m241124_103808_create_comments_table extends Migration
             'users_id' => $this->integer()->notNull(),
             'comment' => $this->text()->notNull(),
             'created_at' => $this->timestamp()->notNull(),
+            'parent_id' => $this->integer()->defaultValue(null),
         ]);
 
         $this->createIndex('idx-comments-posts_id', self::TABLE_NAME, 'posts_id');
@@ -29,6 +30,9 @@ class m241124_103808_create_comments_table extends Migration
         
         $this->createIndex('idx-comments-users_id', self::TABLE_NAME, 'users_id');
         $this->addForeignKey('fg-comments-users_id', self::TABLE_NAME, 'users_id', self::USERS_TABLE_NAME, 'id', 'CASCADE', 'CASCADE');
+        
+        $this->createIndex('idx-comments-parent_id', self::TABLE_NAME, 'parent_id');
+        $this->addForeignKey('fg-comments-parent_id', self::TABLE_NAME, 'parent_id', self::TABLE_NAME, 'id', 'CASCADE', 'CASCADE');
     }
 
     /**
@@ -41,6 +45,9 @@ class m241124_103808_create_comments_table extends Migration
 
         $this->dropForeignKey('fg-comments-users_id', self::TABLE_NAME);
         $this->dropIndex('idx-comments-users_id', self::TABLE_NAME);
+
+        $this->dropForeignKey('fg-comments-parent_id', self::TABLE_NAME);
+        $this->dropIndex('idx-comments-parent_id', self::TABLE_NAME);
 
         $this->dropTable(self::TABLE_NAME);
     }

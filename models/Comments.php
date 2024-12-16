@@ -17,10 +17,11 @@ use yii\helpers\VarDumper;
  * @property int $users_id
  * @property string $comment
  * @property string $created_at
+ * @property int|null $parent_id
  *
  * @property Answers[] $answers
- * @property Posts $posts
- * @property Users $users
+ * @property Posts $post
+ * @property Users $user
  */
 class Comments extends \yii\db\ActiveRecord
 {
@@ -57,9 +58,10 @@ class Comments extends \yii\db\ActiveRecord
             [['comment'], 'required'],
             [['posts_id', 'users_id'], 'integer'],
             [['comment'], 'string'],
-            [['created_at'], 'safe'],
+            [['created_at', 'parent_id'], 'safe'],
             [['posts_id'], 'exist', 'skipOnError' => true, 'targetClass' => Posts::class, 'targetAttribute' => ['posts_id' => 'id']],
             [['users_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['users_id' => 'id']],
+            [['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => self::class, 'targetAttribute' => ['parent_id' => 'id']],
         ];
     }
 
@@ -74,22 +76,24 @@ class Comments extends \yii\db\ActiveRecord
             'users_id' => 'Пользователь',
             'comment' => 'Комментарий',
             'created_at' => 'Дата и время создания',
+            'parent_id' => 'Ответ на комментарий'
         ];
     }
 
     /**
-     * Gets query for [[AnswersComments]].
+     * Gets query for [[Comments]].
      *
      * @return \yii\db\ActiveQuery
      */
     public function getAnswers()
     {
-        return $this->hasMany(AnswersComments::class, ['comments_id' => 'id'])
+        return $this->hasMany(self::class, ['parent_id' => 'id'])
             ->select([
-                AnswersComments::tableName() . '.id', 'comments_id', 'answer as comment', 'login as author', 'url as avatarUrl', 'created_at'
+                self::tableName() . '.id', 'parent_id', 'comment', 'login as author', 'url as avatarUrl', 'created_at'
             ])
-            ->joinWith('users.avatar', false)
-            ->orderBy(['created_at' => SORT_ASC]);
+            ->joinWith('user.avatar', false)
+            ->orderBy(['created_at' => SORT_DESC])
+        ;
     }
 
     /**
@@ -97,7 +101,7 @@ class Comments extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getPosts()
+    public function getPost()
     {
         return $this->hasOne(Posts::class, ['id' => 'posts_id']);
     }
@@ -107,7 +111,7 @@ class Comments extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getUsers()
+    public function getUser()
     {
         return $this->hasOne(Users::class, ['id' => 'users_id'])
             ->select([
@@ -127,15 +131,27 @@ class Comments extends \yii\db\ActiveRecord
         return false;
     }
 
+    public function createAnswerComment($commentId, $postId)
+    {
+        if ($this->validate()) {
+            $this->parent_id = $commentId;
+            $this->posts_id = $postId;
+            $this->users_id = Yii::$app->user->id;
+            return $this->save();
+        }
+
+        return false;
+    }
+
     public static function getComments($postId)
     {
         $query = self::find()
             ->select([
                 self::tableName() . '.id', 'comment', 'created_at', self::tableName() . '.users_id', 'login as author', 'url as avatarUrl'
             ])
-            ->joinWith('users', false)
+            ->joinWith('user', false)
             ->with('answers')
-            ->where(['posts_id' => $postId])
+            ->where(['posts_id' => $postId, 'parent_id' => null])
             ->orderBy(['created_at' => SORT_DESC])
         ;
 
