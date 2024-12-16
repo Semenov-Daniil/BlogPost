@@ -15,7 +15,7 @@ class m241124_104656_create_permission_create_comments extends Migration
     {
         $auth = Yii::$app->authManager;
 
-        $rule = $auth->getRule('IsNotAuthor');
+        $rule = $auth->getRule('isNotAuthor');
 
         $createComment = $auth->createPermission('createComment');
         $createComment->description = 'Create new comment';

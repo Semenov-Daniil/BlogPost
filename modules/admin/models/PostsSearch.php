@@ -62,7 +62,6 @@ class PostsSearch extends Posts
             ->joinWith('statuses', false)
             ->joinWith('themes', false)
             ->joinWith('postImage', false)
-            ->where(['statuses_id' => Statuses::getStatus('На модерации')])
         ;
 
         $dataProvider = new ActiveDataProvider([

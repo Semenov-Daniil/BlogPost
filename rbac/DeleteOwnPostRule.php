@@ -2,14 +2,15 @@
 
 namespace app\rbac;
 
+use app\models\Statuses;
 use yii\rbac\Rule;
 
 /**
  * We check the AuthorID for compliance with the user passed through the parameters
  */
-class DeleteAuthorPostRule extends Rule
+class DeleteOwnPostRule extends Rule
 {
-    public $name = 'deleteAuthorPost';
+    public $name = 'deleteOwnPost';
 
     /**
      * @param string|int $user the user ID.
@@ -19,6 +20,6 @@ class DeleteAuthorPostRule extends Rule
      */
     public function execute($user, $item, $params)
     {
-        return isset($params['post'], $params['countComments']) ? ($params['post']->users_id == $user && $params['countComments'] == 0) : false;
+        return isset($params['author_id'], $params['count_comments']) ? ($params['author_id'] == $user && $params['count_comments'] == 0) : false;
     }
 }

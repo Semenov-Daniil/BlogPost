@@ -124,13 +124,6 @@ class UsersBlocks extends ActiveRecord
     public static function findLastBlock(string $userId): static|null
     {
         return self::find()
-            ->select([
-                'blocked_at',
-                'unblocked_at',
-                'blocked_comment',
-                'pre_unblocked_at',
-                'unblocked_comment',
-            ])
             ->where(['users_id' => $userId])
             ->orderBy([
                 'blocked_at' => SORT_DESC

@@ -38,13 +38,13 @@ $this->params['breadcrumbs'][] = $this->title;
             <p class="card-text h5"><?= nl2br(Html::encode($model->text)); ?></p>
         </div>
         <div class="post-footer mt-4">
-            <?= $this->render('_reactions', [
+            <?= $this->renderAjax('_reactions', [
                 'countLikes' => $model->likes,
                 'countDislikes' => $model->dislikes,
                 'activeLike' => Reactions::getLike(Yii::$app->user->id, $model->id),
                 'activeDislike' => Reactions::getDislike(Yii::$app->user->id, $model->id),
                 'postId' => $model->id,
-                'pointer' => Yii::$app->user->can('reactionPost', ['post' => $model]),
+                'pointer' => Yii::$app->user->can('reactionPost', ['author_id' => $model->users_id]),
             ])?>
             <?php if ($updateOwnPost || $deletePost): ?>
             <div class="post-action d-flex gap-2 flex-wrap mt-4">

@@ -2,14 +2,15 @@
 
 namespace app\rbac;
 
+use app\models\Statuses;
 use yii\rbac\Rule;
 
 /**
  * We check the AuthorID for compliance with the user passed through the parameters
  */
-class IsNotAuthorRule extends Rule
+class UpdateOwnPostRule extends Rule
 {
-    public $name = 'isNotAuthor';
+    public $name = 'updateOwnPost';
 
     /**
      * @param string|int $user the user ID.
@@ -19,6 +20,6 @@ class IsNotAuthorRule extends Rule
      */
     public function execute($user, $item, $params)
     {
-        return isset($params['post']) ? ($params['author_id'] !== $user) : false;
+        return isset($params['author_id'], $params['status_id']) ? ($params['author_id'] == $user && ($params['status_id'] == Statuses::getStatus('Редактирование') || $params['status_id'] == Statuses::getStatus('Одобрен'))) : false;
     }
 }

@@ -16,8 +16,7 @@ class m241124_093635_create_permission_reactions_post extends Migration
     {
         $auth = Yii::$app->authManager;
 
-        $rule = new IsNotAuthorRule();
-        $auth->add($rule);
+        $rule = $auth->getRule('isNotAuthor');
 
         $reactionPost = $auth->createPermission('reactionPost');
         $reactionPost->description = 'Reaction a post';

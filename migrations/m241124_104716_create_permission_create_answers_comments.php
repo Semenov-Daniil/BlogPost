@@ -14,7 +14,7 @@ class m241124_104716_create_permission_create_answers_comments extends Migration
     {
         $auth = Yii::$app->authManager;
 
-        $rule = $auth->getRule('IsAuthor');
+        $rule = $auth->getRule('isAuthor');
 
         $createAnswer = $auth->createPermission('createAnswer');
         $createAnswer->description = 'Create a answer to a comment';

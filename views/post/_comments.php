@@ -11,6 +11,8 @@ use yii\widgets\Pjax;
 /** @var app\models\Posts $post */
 /** @var yii\data\ActiveDataProvider $commentsDataProvider */
 
+var_dump(Yii::$app->user->can('createComment', ['author_id' => $post->users_id]));die;
+
 ?>
 
 <?php Pjax::begin([
@@ -21,7 +23,7 @@ use yii\widgets\Pjax;
         'class' => 'mt-2'
     ]
 ]); ?>
-    <?php if (Yii::$app->user->can('createComment', ['post' => $post])): ?>
+    <?php if (Yii::$app->user->can('createComment', ['author_id' => $post->users_id])): ?>
     <div class="cnt-create-comment">
         <?php $form = ActiveForm::begin([
             'id' => 'create-comment-form',

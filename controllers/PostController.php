@@ -127,8 +127,8 @@ class PostController extends Controller
 
         return $this->render('view', [
             'model' => $post,
-            'updateOwnPost' => Yii::$app->user->can('updateOwnPost', ['post' => $post]),
-            'deletePost' => Yii::$app->user->can('deleteAuthorPost', ['post' => $post, 'countComments' => 0]),
+            'updateOwnPost' => Yii::$app->user->can('updatePost', ['post' => $post, 'status_id' => $post->statuses_id]),
+            'deletePost' => Yii::$app->user->can('deletePost', ['aithor_id' => $post->users_id, 'count_comments' => $post->countComments]),
             'comment' => new Comments(),
             'answer' => new AnswersComments(),
             'commentsDataProvider' => Comments::getComments($id),

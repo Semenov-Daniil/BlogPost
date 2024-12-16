@@ -395,6 +395,11 @@ class Posts extends \yii\db\ActiveRecord
 
     public static function getPost($id)
     {
+        $subQuery = Comments::find()
+            ->select('COUNT(*)')
+            ->where(['posts_id' => $id])
+        ;
+
         return self::find()
             ->select([
                 self::tableName() . '.id', 
@@ -409,6 +414,7 @@ class Posts extends \yii\db\ActiveRecord
                 'created_at',
                 'updated_at',
                 'path_image as pathFile',
+                'countComments' => $subQuery
             ])
             ->joinWith('users', false)
             ->joinWith('themes', false)

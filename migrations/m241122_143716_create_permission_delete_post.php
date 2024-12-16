@@ -1,6 +1,6 @@
 <?php
 
-use app\rbac\DeleteAuthorPostRule;
+use app\rbac\DeleteOwnPostRule;
 use yii\db\Migration;
 
 /**
@@ -22,18 +22,18 @@ class m241122_143716_create_permission_delete_post extends Migration
         $admin = $auth->getRole('admin');
         $auth->addChild($admin, $deletePost);
 
-        $rule = new DeleteAuthorPostRule();
+        $rule = new DeleteOwnPostRule();
         $auth->add($rule);
 
-        $deleteAuthorPost = $auth->createPermission('deleteAuthorPost');
-        $deleteAuthorPost->description = 'Deleting a post by the author';
-        $deleteAuthorPost->ruleName = $rule->name;
-        $auth->add($deleteAuthorPost);
+        $deleteOwnPost = $auth->createPermission('deleteOwnPost');
+        $deleteOwnPost->description = 'Delete own post';
+        $deleteOwnPost->ruleName = $rule->name;
+        $auth->add($deleteOwnPost);
 
-        $auth->addChild($deleteAuthorPost, $deletePost);
+        $auth->addChild($deleteOwnPost, $deletePost);
 
         $author = $auth->getRole('author');
-        $auth->addChild($author, $deleteAuthorPost);
+        $auth->addChild($author, $deleteOwnPost);
     }
 
     /**
