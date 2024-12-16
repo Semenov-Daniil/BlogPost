@@ -43,8 +43,8 @@ use yii\widgets\Pjax;
             <?= $form->field($model, 'login')->textInput() ?>
 
             <div class="d-flex flex-wrap gap-2 justify-content-between mt-3">
-                <?= Html::button('Назад', ['class' => 'btn btn-info', 'data-bs-dismiss' => 'modal']) ?>
-                <?= Html::submitButton('Изменить личную информацию', ['class' => 'btn btn-success']) ?>
+                <?= Html::button('Назад', ['class' => 'btn btn-outline-info', 'data-bs-dismiss' => 'modal']) ?>
+                <?= Html::submitButton('Изменить личную информацию', ['class' => 'btn btn-outline-success']) ?>
             </div>
 
         <?php ActiveForm::end(); ?>

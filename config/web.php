@@ -5,20 +5,19 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic',
-    'name' => 'BlogPost',
+    'name' => 'Пост - не вопрос!',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'language' => 'ru-RU',
     'aliases' => [
-        '@bower'   => '@vendor/bower-asset',
-        '@npm'     => '@vendor/npm-asset',
-        '@avatars' => 'img/avatars',
+        '@bower'         => '@vendor/bower-asset',
+        '@npm'           => '@vendor/npm-asset',
+        '@avatars'       => 'img/avatars',
         '@defaultAvatar' => '@avatars/default.jpg',
-        '@posts' => 'img/posts',
+        '@posts'         => 'img/posts',
     ],
     'components' => [
         'request' => [
-            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'zfwqB4nFevUPGKVGiwC4b3g-ok4s6Kgz',
             'baseUrl' => '',
         ],
@@ -35,7 +34,6 @@ $config = [
         'mailer' => [
             'class' => \yii\symfonymailer\Mailer::class,
             'viewPath' => '@app/mail',
-            // send all mails to a file by default.
             'useFileTransport' => true,
         ],
         'log' => [
@@ -53,6 +51,11 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                '/account/<action>' => '/account/account/<action>',
+                '/account/<controller>/<action>' => '/account/<controller>/<action>',
+
+                '/panel-admin/<action>' => '/panel-admin/admin/<action>',
+                '/panel-admin/<controller>/<action>' => '/panel-admin/<controller>/<action>',
             ],
         ],
 
@@ -60,7 +63,7 @@ $config = [
             'class' => 'yii\i18n\Formatter',
             'defaultTimeZone' => 'Etc/GMT-3',
             'timeZone' => 'Europe/Moscow',
-            'datetimeFormat' => 'dd.MM.yyyy HH:mm',
+            'datetimeFormat' => 'HH:mm dd.MM.yyyy',
             'timeFormat' => 'HH:mm',
             'locale' => 'ru-RU',
             'language' => 'ru-RU',
@@ -75,7 +78,7 @@ $config = [
     'modules' => [
         'account' => [
             'class' => 'app\modules\account\Module',
-            'defaultRoute' => 'post'
+            'defaultRoute' => 'account'
         ],
         'panel-admin' => [
             'class' => 'app\modules\admin\Module',

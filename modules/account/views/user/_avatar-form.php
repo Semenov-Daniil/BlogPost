@@ -24,7 +24,7 @@ use yii\widgets\Pjax;
             'action' => ['update-avatar'],
             'fieldConfig' => [
                 'template' => "{label}\n{input}\n{error}",
-                'labelOptions' => ['class' => 'col-lg-7 col-form-label mr-lg-3'],
+                'labelOptions' => ['class' => 'col-lg-7 col-form-label mr-lg-3 pt-0'],
                 'inputOptions' => ['class' => 'form-control'],
                 'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
             ],
@@ -36,9 +36,13 @@ use yii\widgets\Pjax;
 
             <?= $form->field($model, 'uploadFile')->fileInput()->label('Загрузите аватар') ?>
 
+            <div class="avatar-wrapp d-flex">
+                <?= Html::img('/' . (Yii::$app->user->identity?->avatar ? Yii::$app->user->identity->avatar->url : Yii::getAlias('@defaultAvatar')), ['id' => 'userAvatar', 'class' => 'avatar-cicle-xl object-fit-cover mx-auto', 'alt' => 'Аватарка']); ?>
+            </div>
+
             <div class="d-flex flex-wrap gap-2 justify-content-between mt-3">
-                <?= Html::button('Назад', ['class' => 'btn btn-info', 'data-bs-dismiss' => 'modal']) ?>
-                <?= Html::submitButton('Изменить аватар', ['class' => 'btn btn-success']) ?>
+                <?= Html::button('Назад', ['class' => 'btn btn-outline-info', 'data-bs-dismiss' => 'modal']) ?>
+                <?= Html::submitButton('Изменить аватар', ['class' => 'btn btn-outline-success']) ?>
             </div>
 
         <?php ActiveForm::end(); ?>

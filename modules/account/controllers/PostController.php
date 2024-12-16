@@ -46,6 +46,8 @@ class PostController extends Controller
      */
     public function actionIndex()
     {
+        Yii::$app->user->setReturnUrl(['index']);
+
         $searchModel = new PostsSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
         $model = new UpdateUserForm();
@@ -57,6 +59,23 @@ class PostController extends Controller
             'model' => $model,
             'themes' => Themes::getThemes(),
             'stylesStatuses' => Statuses::getStylesStatus(),
+        ]);
+    }
+
+    /**
+     * Displays a single Posts model.
+     * @param int $id ID
+     * @return string
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionView($id)
+    {   
+        $post = $this->findModel($id);
+
+        return $this->render('view', [
+            'model' => $post,
+            'updatePost' => Yii::$app->user->can('updatePost', ['author_id' => $post->users_id, 'status_id' => $post->statuses_id]),
+            'deletePost' => Yii::$app->user->can('deletePost', ['author_id' => $post->users_id, 'count_comments' => $post->count_comments]),
         ]);
     }
 
@@ -169,19 +188,6 @@ class PostController extends Controller
     }
 
     /**
-     * Displays a single Posts model.
-     * @param int $id ID
-     * @return string
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
      * Creates a new Posts model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
@@ -232,7 +238,7 @@ class PostController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Posts::findOne(['id' => $id])) !== null) {
+        if (($model = Posts::getPost($id)) !== null) {
             return $model;
         }
 

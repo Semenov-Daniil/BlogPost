@@ -38,8 +38,8 @@ use yii\widgets\Pjax;
             <?= $form->field($model, 'password_repeat')->passwordInput() ?>
 
             <div class="d-flex flex-wrap gap-2 justify-content-between mt-3">
-                <?= Html::button('Назад', ['class' => 'btn btn-info', 'data-bs-dismiss' => 'modal']) ?>
-                <?= Html::submitButton('Изменить пароль', ['class' => 'btn btn-success']) ?>
+                <?= Html::button('Назад', ['class' => 'btn btn-outline-info', 'data-bs-dismiss' => 'modal']) ?>
+                <?= Html::submitButton('Изменить пароль', ['class' => 'btn btn-outline-success']) ?>
             </div>
 
         <?php ActiveForm::end(); ?>

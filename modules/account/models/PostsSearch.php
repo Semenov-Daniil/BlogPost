@@ -67,10 +67,10 @@ class PostsSearch extends Posts
                 'countComments' => $subQuery,
                 'path_image as pathFile',
             ])
-            ->joinWith('users', false)
-            ->joinWith('statuses', false)
-            ->joinWith('themes', false)
-            ->joinWith('postImage', false)
+            ->joinWith('user', false)
+            ->joinWith('status', false)
+            ->joinWith('theme', false)
+            ->joinWith('image', false)
             ->where(['users_id' => Yii::$app->user->id])
         ;
 

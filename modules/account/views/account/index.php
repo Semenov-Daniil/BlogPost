@@ -1,15 +1,13 @@
 <?php
 
-use app\models\Posts;
+use app\widgets\Alert;
 use yii\bootstrap5\LinkPager;
 use yii\bootstrap5\Modal;
 use yii\helpers\Html;
-use yii\helpers\Url;
-use yii\grid\ActionColumn;
-use yii\web\JsExpression;
 use yii\web\YiiAsset;
 use yii\widgets\ListView;
 use yii\widgets\Pjax;
+
 /** @var yii\web\View $this */
 /** @var app\modules\account\models\PostsSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
@@ -20,9 +18,11 @@ use yii\widgets\Pjax;
 $this->title = 'Личный кабинет';
 $this->params['breadcrumbs'][] = $this->title;
 
-$this->registerJsFile('js/account.js', ['depends' => YiiAsset::class]);
-$this->registerJsFile('/js/searchPosts.js', ['depends' => YiiAsset::class]);
-$this->registerJsFile('/js/deletePost.js', ['depends' => YiiAsset::class]);
+$this->registerJsFile('js/updateAvatar.js', ['depends' => YiiAsset::class]);
+$this->registerJsFile('js/updateInfoUser.js', ['depends' => YiiAsset::class]);
+$this->registerJsFile('js/updatePasswordUser.js', ['depends' => YiiAsset::class]);
+$this->registerJsFile('js/searchPosts.js', ['depends' => YiiAsset::class]);
+$this->registerJsFile('js/deletePostPjax.js', ['depends' => YiiAsset::class]);
 
 ?>
 <div class="account-index">
@@ -42,12 +42,12 @@ $this->registerJsFile('/js/deletePost.js', ['depends' => YiiAsset::class]);
     <?php Pjax::end(); ?>
 
     <p>
-        <?= Html::a('Создать пост', ['/post/create'], ['class' => 'btn btn-success my-3']) ?>
+        <?= Html::a('Создать пост', ['/post/create'], ['class' => 'btn btn-info px-3 py-2 my-3']) ?>
     </p>
 
     <?php Pjax::begin([
         'id' => 'pjax-user-posts',
-        'enablePushState' => false,
+        'enablePushState' => true,
         'timeout' => 10000,
     ]); ?>
 
@@ -89,16 +89,4 @@ $this->registerJsFile('/js/deletePost.js', ['depends' => YiiAsset::class]);
 
 </div>
 
-<?php Modal::begin([
-    'id' => 'modal-delete',
-    'title' => 'Удаление поста',
-    'bodyOptions' => ['class' => 'py-4'],
-    'options' => ['class' => 'user-select-none']
-]); ?>
-    
-    <h5 class="modal-body-text">Вы точно хотите удалить пост?</h5>
-    <div class="modal-action mt-4 d-flex">
-        <?= Html::a('Удалить', ['/post/delete'], ['class' => 'btn btn-danger btn-delete ms-auto', 'data' => ['pjax' => 0]]); ?>
-    </div>
-
-<?php Modal::end(); ?>
+<?= $this->render('@app/views/post/_modal-delete'); ?>
