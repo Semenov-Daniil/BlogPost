@@ -8,7 +8,6 @@ use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
-use app\models\ContactForm;
 use app\models\Posts;
 use app\models\RegisterForm;
 use app\models\UsersBlocks;
@@ -45,9 +44,9 @@ class SiteController extends Controller
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
-                    'logout' => ['post'],
-                    'login' => ['post', 'get'],
-                    'register' => ['post', 'get'],
+                    'logout' => ['POST'],
+                    'login' => ['POST', 'GET'],
+                    'register' => ['POST', 'GET'],
                 ],
             ],
         ];
@@ -90,12 +89,10 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-
         $model = new LoginForm();
+
         if ($this->request->isAjax) {
+
             if ($this->request->isPost) {
                 if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 
@@ -110,9 +107,9 @@ class SiteController extends Controller
                     }
 
                     if ($model->login()) {
-                        return $this->goBack()->send();
+                        Yii::$app->session->setFlash('success', 'Вы успешно вошли в аккаунт ' . Yii::$app->user->identity->login . '.');
+                        return $this->redirect([(Yii::$app->user->can('author') ? '/account' : '/panel-admin')]);
                     }
-
                 }
             }
 
@@ -134,17 +131,16 @@ class SiteController extends Controller
      */
     public function actionRegister()
     {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-
         $model = new RegisterForm();
+
         if ($this->request->isAjax) {
+
             if ($model->load(Yii::$app->request->post())) {
                 $model->uploadFile = UploadedFile::getInstance($model, 'uploadFile');
 
                 if ($model->register()) {
-                    return $this->goBack()->send();
+                    Yii::$app->session->setFlash('success', 'Вы успешно зарегистрировались под ' . Yii::$app->user->identity->login . '.');
+                    return $this->redirect(['/account']);
                 }
             }
         }
@@ -162,24 +158,22 @@ class SiteController extends Controller
     public function actionLogout()
     {
         Yii::$app->user->logout();
-
+        Yii::$app->session->setFlash('info', 'Вы вышли из аккаунта.');
         return $this->goHome();
     }
 
     /**
      * Displays about page.
      *
-     * @return string
+     * @return Response
      */
     public function actionAbout()
     {
         return $this->render('about');
     }
 
-    public function actionRbac()
+    public function actionAlert()
     {
-        $auth = Yii::$app->authManager;
-
-        var_dump($auth->getRole('admin'));
+        return $this->renderAjax('_alert');
     }
 }

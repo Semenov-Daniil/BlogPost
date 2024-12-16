@@ -10,8 +10,6 @@ $this->title = Yii::$app->name;
 ?>
 <div class="site-index">
 
-    <h3 class="mb-5"><?= Html::encode($this->title) ?></h3>
-
     <?= ListView::widget([
         'dataProvider' => $posts,
         'layout' => "{items}",

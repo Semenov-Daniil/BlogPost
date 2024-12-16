@@ -1,18 +1,14 @@
 <?php
 
 /** @var yii\web\View $this */
+/** @var yii\data\ActiveDataProvider $posts */
 
-use yii\helpers\Html;
+use yii\bootstrap5\Html;
 
-$this->title = 'About';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = 'О нас';
 ?>
 <div class="site-about">
-    <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        This is the About page. You may modify the following file to customize its content:
-    </p>
+    <h3><?= Html::encode($this->title); ?></h3>
 
-    <code><?= __FILE__ ?></code>
 </div>

@@ -5,8 +5,6 @@
 
 /** @var app\models\LoginForm $model */
 
-use app\widgets\Alert;
-use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\Modal;
 use yii\web\YiiAsset;
@@ -45,7 +43,6 @@ $this->registerJsFile('js/login.js', ['depends' => YiiAsset::class]);
 Modal::begin([
     'id' => 'modal-block',
     'title' => 'Вы заблокированы!',
-    // 'centerVertical' => true,
     'size' => Modal::SIZE_LARGE
 ]);
 
