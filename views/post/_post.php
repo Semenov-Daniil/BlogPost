@@ -22,7 +22,7 @@ use yii\bootstrap5\Modal;
             </div>
             <p class="card-text"><?= Html::encode($model->preview); ?></p>
             <div class="d-flex gap-2 flex-wrap">
-                <?= Html::a('Читать пост', ['view', 'id' => $model->id], ['class' => 'btn btn-outline-info']); ?>
+                <?= Html::a('Читать пост', ['view', 'id' => $model->id], ['class' => 'btn btn-outline-primary']); ?>
 
                 <?php if (Yii::$app->user->can('updatePost', ['author_id' => $model->users_id, 'status_id' => $model->statuses_id])): ?>
                     <?= Html::a('Редактировать', ['update', 'id' => $model->id], ['class' => 'btn btn-outline-warning']); ?>

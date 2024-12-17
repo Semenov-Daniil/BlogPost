@@ -22,9 +22,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h3>Пользователь: <?= Html::encode($this->title) ?></h3>
 
-    <p>
-        <?= Html::a('Назад', ['index'], ['class' => 'btn btn-info'])?>
-    </p>
+    <div class="admin-action d-flex gap-3 my-4">
+        <?= Html::a('Вернуться назад', ['/panel-admin/user/index'], ['class' => 'btn btn-outline-info']); ?>
+    </div>
 
     <?php Pjax::begin(); ?>
 

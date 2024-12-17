@@ -13,6 +13,7 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\Html;
 use yii\helpers\VarDumper;
 use yii\web\UploadedFile;
 
@@ -106,7 +107,7 @@ class PostController extends Controller
      */
     public function actionIndex()
     {
-        Yii::$app->user->setReturnUrl('/post/index');
+        Yii::$app->user->setReturnUrl(['/post/index']);
         
         $searchModel = new PostsSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
@@ -178,6 +179,8 @@ class PostController extends Controller
                 $model->uploadFile = UploadedFile::getInstance($model, 'uploadFile');
 
                 if ($model->create()) {
+                    Yii::$app->session->setFlash('success', 'Вы создали новый пост: ' . Html::encode($model->title) . '.');
+                    Yii::$app->session->setFlash('info', 'Чтобы опубликовать новый пост, отправьте его на модерацию.');
                     return $this->redirect(['/account/post/view', 'id' => $model->id]);
                 }
             }

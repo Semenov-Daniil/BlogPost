@@ -14,8 +14,9 @@ use yii\bootstrap5\Modal;
 ]); ?>
 
     <h5 class="modal-body-text">Вы точно хотите удалить комментарий и ответы на него?</h5>
-    <div class="modal-action mt-4 d-flex">
-        <?= Html::a('Удалить', ['/comment/delete'], ['class' => 'btn btn-outline-danger btn-delete ms-auto', 'data' => ['pjax' => 0]]); ?>
+    <div class="modal-cnt my-3"></div>
+    <div class="modal-action d-flex">
+        <?= Html::a('Удалить', ['/comment/delete'], ['class' => 'btn btn-outline-danger btn-delete-comment ms-auto', 'data' => ['pjax' => 0]]); ?>
     </div>
 
 <?php Modal::end(); ?>

@@ -1,19 +1,49 @@
 $(() => {
 
+    const showCollapse = function (link, collapse) {
+        collapse.find('.card-body').load(link.attr('href'), function() {
+            if (link.hasClass('btn-temp-block')) {
+                collapse.addClass('collapse-temp-block');
+                collapse.find('.btn-blocked').html('Заблокировать на время');
+            } else {
+                collapse.addClass('collapse-perm-block');
+                collapse.find('.btn-blocked').html('Заблокировать навсегда');
+            }
+            collapse.collapse('show');
+        });
+    }
+
+    const hideCollapse = function (link, collapse) {
+        collapse.collapse('hide');
+        setTimeout(() => {
+            collapse.find('.card-body').html('');
+        }, 500);
+    }
+
     $('#pjax-admin-users').on('click', '.btn-temp-block, .btn-perm-block', function(event) {
         event.preventDefault();
 
         const collapse = $(`#collapseBlockUser${$(this).data('id')}`);
+        const link = $(this);
 
         if (collapse.hasClass('show')) {
-            collapse.collapse('hide');
-            setTimeout(() => {
-                collapse.find('.card-body').html('');
-            }, 500);
+            hideCollapse(link, collapse);
+
+            if (link.hasClass('btn-temp-block') && collapse.hasClass('collapse-perm-block')) {
+                collapse.removeClass('collapse-perm-block');
+                setTimeout(() => {
+                    showCollapse(link, collapse);
+                }, 500);
+            }
+            
+            if (link.hasClass('btn-perm-block') && collapse.hasClass('collapse-temp-block')) {
+                collapse.removeClass('collapse-temp-block');
+                setTimeout(() => {
+                    showCollapse(link, collapse);
+                }, 500);
+            }
         } else {
-            collapse.find('.card-body').load($(this).attr('href'), function() {
-                collapse.collapse('show');
-            });
+            showCollapse(link, collapse);
         }
     });
 
@@ -21,24 +51,54 @@ $(() => {
         event.preventDefault();
 
         const form = $(this);
+        const collapse = $(`#collapseBlockUser${form.data('id')}`);
 
-        $.ajax({
-            url: form.attr('action'),
-            method: form.attr('method'),
-            data: form.serialize(),
-            success(data) {
-                if (data.success) {
-                    $(`#collapseBlockUser${form.data('id')}`).collapse('hide');
-                    setTimeout(() => {
-                        $(`#collapseBlockUser${form.data('id')}`).find('.card-body').html('');
-                    }, 500);
+        if (collapse.hasClass('collapse-perm-block')) {
+            $('#modal-blocked .btn-bloked').attr('href', `/panel-admin/user/permanens-block?id=${form.data('id')}`);
+            $('#modal-blocked').modal('show');
 
-                    $.pjax.reload('#pjax-admin-users');
-                } else {
-                    $(`#pjax-block-${form.data('id')}`).html(data);
+            $('#modal-blocked').on('click', '.btn-bloked', function(event) {
+                event.preventDefault();
+                $.ajax({
+                    url: form.attr('action'),
+                    method: form.attr('method'),
+                    data: form.serialize(),
+                    success(data) {
+                        if (data.success) {
+                            $('#modal-blocked').modal('hide');
+                            
+                            $(`#collapseBlockUser${form.data('id')}`).collapse('hide');
+                            setTimeout(() => {
+                                $(`#collapseBlockUser${form.data('id')}`).find('.card-body').html('');
+                            }, 500);
+        
+                            $.pjax.reload('#pjax-admin-users');
+                        } else {
+                            $(`#pjax-block-${form.data('id')}`).html(data);
+                        }
+                    }
+                });
+            });
+        } else {
+            $.ajax({
+                url: form.attr('action'),
+                method: form.attr('method'),
+                data: form.serialize(),
+                success(data) {
+                    if (data.success) {
+                        $(`#collapseBlockUser${form.data('id')}`).collapse('hide');
+                        setTimeout(() => {
+                            $(`#collapseBlockUser${form.data('id')}`).find('.card-body').html('');
+                        }, 500);
+    
+                        $.pjax.reload('#pjax-admin-users');
+                    } else {
+                        $(`#pjax-block-${form.data('id')}`).html(data);
+                    }
                 }
-            }
-        });
+            });
+        }
+
 
         return false;
     });
@@ -54,8 +114,4 @@ $(() => {
             collapse.find('.card-body').html('');
         }, 500);
     });
-
-    // $('#pjax-admin-users').on('beforeSubmit', '')
-
-
 })

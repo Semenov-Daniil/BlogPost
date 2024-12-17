@@ -26,19 +26,13 @@ use yii\bootstrap5\Modal;
                     <?= Html::a('Читать пост', ['/post/view', 'id' => $model->id], ['class' => 'btn btn-outline-primary']); ?>
                 <?php endif; ?>
 
-                <?php if ($model->statuses_id == Statuses::getIdByTitle('Редактирование')): ?>
-                    <?= Html::a('Читать пост', ['post/view', 'id' => $model->id], ['class' => 'btn btn-outline-primary']); ?>
-                    <?= Html::a('Отправить на модерацию', ['post/moderation', 'id' => $model->id], ['class' => 'btn btn-outline-info bnt-moder', 'data' => ['pjax' => 0]]); ?>
+                <?php if ($model->statuses_id == Statuses::getIdByTitle('На модерации')): ?>
+                    <?= Html::a('Подробнее', ['post/view', 'id' => $model->id], ['class' => 'btn btn-outline-primary']); ?>
+                    <?= Html::a('Одобрить', ['post/approve', 'id' => $model->id], ['class' => 'btn btn-outline-success']); ?>
+                    <?= Html::a('Запретить', ['post/prohibit', 'id' => $model->id], ['class' => 'btn btn-outline-warning']); ?>
                 <?php endif; ?>
 
-                <?php if (Yii::$app->user->can('updatePost', ['author_id' => $model->users_id, 'status_id' => $model->statuses_id])): ?>
-                    <?= Html::a('Редактировать', ['/post/update', 'id' => $model->id], ['class' => 'btn btn-outline-warning']); ?>
-                <?php endif; ?>
-
-                <?php if (Yii::$app->user->can('deletePost', ['author_id' => $model->users_id, 'count_comments' => $model->count_comments])): ?>
-                    <?= Html::a('Удалить', ['/post/delete', 'id' => $model->id], ['class' => 'btn btn-outline-danger btn-delete', 'data' => ['title' => $model->title, 'pjax' => 0]]); ?>
-                <?php endif; ?>
-
+                <?= Html::a('Удалить', ['/post/delete', 'id' => $model->id], ['class' => 'btn btn-outline-danger btn-delete', 'data' => ['title' => $model->title, 'pjax' => 0]]); ?>
             </div>
         </div>
     </div>

@@ -15,6 +15,9 @@ $this->title = Yii::$app->name;
         'layout' => "{items}",
         'itemOptions' => ['class' => 'item mb-4'],
         'itemView' => '_post',
-        'emptyText' => false
+        'emptyText' => false,
+        'options' => [
+            'class' => 'mt-3'
+        ]
     ]) ?>
 </div>

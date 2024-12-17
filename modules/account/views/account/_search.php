@@ -7,6 +7,7 @@ use yii\bootstrap5\ActiveForm;
 /** @var app\models\PostsSearch $model */
 /** @var yii\bootstrap5\ActiveForm $form */
 /** @var app\models\Themes $themes */
+/** @var app\models\Themes $statuses */
 
 ?>
 
@@ -34,6 +35,8 @@ use yii\bootstrap5\ActiveForm;
     <?= $form->field($model, 'title')->textInput(); ?>
 
     <?= $form->field($model, 'themes_id')->dropDownList($themes, ['prompt' => 'Все темы']) ?>
+
+    <?= $form->field($model, 'statuses_id')->dropDownList($statuses, ['prompt' => 'Все статусы']) ?>
 
     <?php ActiveForm::end(); ?>
 

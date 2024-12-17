@@ -14,6 +14,7 @@ use yii\widgets\Pjax;
 /** @var array $blocksFilter */
 
 $this->title = 'Список пользователей';
+$this->params['breadcrumbs'][] = ['label' => 'Панель администратора', 'url' => ['/panel-admin']];
 $this->params['breadcrumbs'][] = $this->title;
 
 $this->registerJsFile('/js/searchUsers.js', ['depends' => YiiAsset::class]);
@@ -24,6 +25,10 @@ $this->registerJsFile('/js/unblockUsers.js', ['depends' => YiiAsset::class]);
 <div class="users-index">
 
     <h3><?= Html::encode($this->title) ?></h3>
+
+    <div class="admin-action d-flex gap-3 my-4">
+        <?= Html::a('Вернуться назад', ['/panel-admin'], ['class' => 'btn btn-outline-info']); ?>
+    </div>
 
     <?php Pjax::begin([
         'id' => 'pjax-admin-users',
@@ -66,3 +71,5 @@ $this->registerJsFile('/js/unblockUsers.js', ['depends' => YiiAsset::class]);
     <?php Pjax::end(); ?>
 
 </div>
+
+<?= $this->render('_modal-blocked'); ?>

@@ -1,5 +1,6 @@
 <?php
 
+use app\widgets\Alert;
 use yii\bootstrap5\LinkPager;
 use yii\bootstrap5\Modal;
 use yii\helpers\Html;
@@ -18,15 +19,15 @@ $this->title = 'Панель администратора';
 $this->params['breadcrumbs'][] = $this->title;
 
 $this->registerJsFile('/js/searchPosts.js', ['depends' => YiiAsset::class]);
-$this->registerJsFile('/js/deletePost.js', ['depends' => YiiAsset::class]);
+$this->registerJsFile('/js/deletePostPjax.js', ['depends' => YiiAsset::class]);
 
 ?>
-<div class="posts-index">
+<div class="admin-index">
 
     <h3><?= Html::encode($this->title) ?></h3>
 
-    <div>
-        <?= Html::a('Список пользователей', ['/panel-admin/user'], ['class' => 'btn btn-primary']); ?>
+    <div class="admin-action d-flex gap-3 my-4">
+        <?= Html::a('Список пользователей', ['/panel-admin/user/index'], ['class' => 'btn btn-primary']); ?>
     </div>
 
     <?php Pjax::begin([
@@ -35,16 +36,18 @@ $this->registerJsFile('/js/deletePost.js', ['depends' => YiiAsset::class]);
         'timeout' => 10000,
     ]); ?>
 
-    <h4 class="my-3">Все посты</h4>
+    <h4>Все посты</h4>
+
+    <?= Alert::widget(); ?>
     
-    <div class="cnt-search d-flex flex-wrap gap-4 justify-content-between align-items-end mb-4 mt-4">
+    <div class="cnt-search d-flex flex-wrap gap-4 justify-content-between align-items-end my-3">
         <div class="cnt-sorts">
             <p>Сортировка</p>
             <div class="sort-links d-flex flex-wrap gap-4">
                 <?= $dataProvider->sort->link('created_at', ['label' => 'Дата и время создания', 'class' => 'btn btn-outline-secondary'])?>
             </div>
         </div>
-        <div class="cnt-filter col-12 col-lg-8 col-xl-6 d-flex flex-wrap gap-4 align-items-end">
+        <div class="cnt-filter col-12 col-lg-8 d-flex flex-wrap gap-4 align-items-end">
             <?php echo $this->render('_search', [
                 'model' => $searchModel, 
                 'themes' => $themes,
@@ -77,16 +80,4 @@ $this->registerJsFile('/js/deletePost.js', ['depends' => YiiAsset::class]);
 
 </div>
 
-<?php Modal::begin([
-    'id' => 'modal-delete',
-    'title' => 'Удаление поста',
-    'bodyOptions' => ['class' => 'py-4'],
-    'options' => ['class' => 'user-select-none']
-]); ?>
-    
-    <h5 class="modal-body-text">Вы точно хотите удалить пост?</h5>
-    <div class="modal-action mt-4 d-flex">
-        <?= Html::a('Удалить', ['/post/delete'], ['class' => 'btn btn-danger btn-delete ms-auto', 'data' => ['pjax' => 0]]); ?>
-    </div>
-
-<?php Modal::end(); ?>
+<?= $this->render('@app/views/post/_modal-delete'); ?>

@@ -159,4 +159,17 @@ class Comments extends \yii\db\ActiveRecord
             'query' => $query,
         ]);
     }
+
+    public static function getComment($id)
+    {
+        return self::find()
+            ->select([
+                self::tableName() . '.id', 'comment', 'created_at', self::tableName() . '.users_id', 'login as author', 'url as avatarUrl'
+            ])
+            ->joinWith('user', false)
+            ->with('answers')
+            ->where([self::tableName() . '.id' => $id])
+            ->one()
+        ;
+    }
 }

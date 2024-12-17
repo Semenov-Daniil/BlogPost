@@ -118,7 +118,7 @@ class Posts extends \yii\db\ActiveRecord
             'users_id' => 'Автор',
             'themes_id' => 'Тема',
             'theme' => 'Тема',
-            'statuses_id' => 'Статус ID',
+            'statuses_id' => 'Статус',
             'status' => 'Статус',
             'created_at' => 'Создан',
             'updated_at' => 'Обновлен',
@@ -417,6 +417,7 @@ class Posts extends \yii\db\ActiveRecord
                 'login as author', 
                 'themes_id',
                 'statuses_id',
+                Statuses::tableName() . '.title as status',
                 'created_at',
                 'updated_at',
                 'path_image as pathFile',
@@ -424,6 +425,7 @@ class Posts extends \yii\db\ActiveRecord
             ])
             ->joinWith('user', false)
             ->joinWith('theme', false)
+            ->joinWith('status', false)
             ->joinWith('image', false)
             ->where(Posts::tableName() . '.id=:id', [':id' => $id])
             ->one()

@@ -11,6 +11,7 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\VarDumper;
 use yii\web\Response;
 
 /**
@@ -62,8 +63,7 @@ class CommentController extends Controller
                 'verbs' => [
                     'class' => VerbFilter::class,
                     'actions' => [
-                        'delete' => ['POST'],
-                        'answer-delete' => ['POST'],
+                        'delete' => ['GET', 'POST'],
                         'create' => ['POST'],
                         'create-answer' => ['GET', 'POST'],
                     ],
@@ -129,33 +129,23 @@ class CommentController extends Controller
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id, $postId)
+    public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
 
-        return $this->renderAjax('/post/_comments', [
-            'comment' => new Comments(),
-            'post' => Posts::find()->select('id', 'users_id')->where(['id' => $postId])->one(),
-            'commentsDataProvider' => Comments::getComments($postId),
-        ]);
-    }
+        if ($this->request->isAjax) {
+            
+            if ($this->request->isPost) {
+                $model->delete();
+            }
 
-    /**
-     * Deletes an existing Comments model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
-     * @return \yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionAnswerDelete($id, $postId)
-    {
-        $this->findModelAnswer($id)->delete();
-
-        return $this->renderAjax('/post/_comments', [
-            'comment' => new Comments(),
-            'post' => Posts::find()->select('id', 'users_id')->where(['id' => $postId])->one(),
-            'commentsDataProvider' => Comments::getComments($postId),
-        ]);
+            return $this->renderAjax('_comment', [
+                'model' => $model,
+                'postId' => null,
+                'createAnswer' => false,
+                'deleteComment' => false
+            ]);
+        }
     }
 
     /**
@@ -167,7 +157,7 @@ class CommentController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Comments::findOne(['id' => $id])) !== null) {
+        if (($model = Comments::getComment($id)) !== null) {
             return $model;
         }
 

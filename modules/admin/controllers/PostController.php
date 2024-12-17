@@ -6,6 +6,7 @@ use app\models\Posts;
 use app\models\Statuses;
 use app\models\Themes;
 use app\modules\admin\models\PostsSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -16,39 +17,17 @@ use yii\filters\VerbFilter;
 class PostController extends Controller
 {
     /**
-     * @inheritDoc
-     */
-    public function behaviors()
-    {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
-                    ],
-                ],
-            ]
-        );
-    }
-
-    /**
-     * Lists all Posts models.
-     *
+     * Displays a single Posts model.
+     * @param int $id ID
      * @return string
+     * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionIndex()
-    {
-        $searchModel = new PostsSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+    public function actionView($id)
+    {   
+        $post = $this->findModel($id);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-            'themes' => Themes::getThemes(),
-            'statuses' => Statuses::getStatuses(),
-            'stylesStatuses' => Statuses::getStylesStatus(),
+        return $this->render('view', [
+            'model' => $post,
         ]);
     }
 
@@ -56,19 +35,20 @@ class PostController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->statuses_id == Statuses::getStatus('На модерации')) {
-            $model->statuses_id = Statuses::getStatus('Одобрен');
-            $model->save();
+        if ($model->statuses_id == Statuses::getIdByTitle('На модерации')) {
+            $model->statuses_id = Statuses::getIdByTitle('Одобрен');
+            $model->save(false);
+            Yii::$app->session->setFlash('info', 'Вы изменили статус поста.');
         }
 
         $searchModel = new PostsSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        return $this->render('index', [
+        return $this->render('/admin/index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'themes' => Themes::getThemes(),
-            'statuses' => Statuses::getStatuses(),
+            'statuses' => $searchModel->getStatuses(),
             'stylesStatuses' => Statuses::getStylesStatus(),
         ]);
     }
@@ -77,19 +57,20 @@ class PostController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->statuses_id == Statuses::getStatus('На модерации')) {
-            $model->statuses_id = Statuses::getStatus('Запрещен');
-            $model->save();
+        if ($model->statuses_id == Statuses::getIdByTitle('На модерации')) {
+            $model->statuses_id = Statuses::getIdByTitle('Запрещен');
+            $model->save(false);
+            Yii::$app->session->setFlash('info', 'Вы изменили статус поста.');
         }
 
         $searchModel = new PostsSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        return $this->render('index', [
+        return $this->render('/admin/index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'themes' => Themes::getThemes(),
-            'statuses' => Statuses::getStatuses(),
+            'statuses' => $searchModel->getStatuses(),
             'stylesStatuses' => Statuses::getStylesStatus(),
         ]);
     }
@@ -103,7 +84,7 @@ class PostController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Posts::findOne(['id' => $id])) !== null) {
+        if (($model = Posts::getPost($id)) !== null) {
             return $model;
         }
 

@@ -39,7 +39,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top', 'data-bs-theme'=>"dark"],
     ]);
     echo Nav::widget([
-        'options' => ['class' => 'navbar-nav ms-auto d-flex gap-1 align-items-center'],
+        'options' => ['class' => 'navbar-nav ms-auto d-flex gap-2 align-items-center'],
         'route' => Yii::$app->request->getPathInfo(),
         'items' => [
             ['label' => 'Главная', 'url' => ['/site/index'], 'linkOptions' => ['class' => 'btn btn-dark px-3']],

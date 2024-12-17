@@ -27,12 +27,12 @@ use yii\bootstrap5\Modal;
             <div class="col-12 col-lg-auto d-flex border-top border-lg-start">
                 <div class="card-body d-flex gap-3 flex-wrap align-content-center">
                 <?php if(!$model->isBlock): ?>
-                    <?= Html::a('Заблокировать на время', ['temporary-block', 'id' => $model->id], ['class' => 'btn btn-primary btn-temp-block', 'data' => ['id' => $model->id, 'pjax' => 0]]); ?>
-                    <?= Html::a('Заблокировать навсегда', ['permanens-block', 'id' => $model->id], ['class' => 'btn btn-primary btn-perm-block', 'data' => ['id' => $model->id, 'pjax' => 0]]); ?>
+                    <?= Html::a('Заблокировать на время', ['temporary-block', 'id' => $model->id], ['class' => 'btn btn-outline-warning btn-temp-block', 'data' => ['id' => $model->id, 'pjax' => 0]]); ?>
+                    <?= Html::a('Заблокировать навсегда', ['permanens-block', 'id' => $model->id], ['class' => 'btn btn-outline-danger btn-perm-block', 'data' => ['id' => $model->id, 'pjax' => 0]]); ?>
                 <?php elseif (!$model->isPermBlock): ?>
-                    <?= Html::a('Разблокировать', ['unblock', 'id' => $model->id], ['class' => 'btn btn-success btn-unblock', 'data' => ['id' => $model->id, 'pjax' => 0]]); ?>
+                    <?= Html::a('Разблокировать', ['unblock', 'id' => $model->id], ['class' => 'btn btn-outline-success btn-unblock', 'data' => ['id' => $model->id, 'pjax' => 0]]); ?>
                 <?php endif; ?>
-                <?= Html::a('Подробнее', ['view', 'id' => $model->id], ['class' => 'btn btn-primary', 'data' => ['pjax' => 0]]); ?>
+                <?= Html::a('Подробнее', ['view', 'id' => $model->id], ['class' => 'btn btn-outline-info', 'data' => ['pjax' => 0]]); ?>
                 </div>
             </div>
         </div>

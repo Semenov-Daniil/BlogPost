@@ -13,6 +13,7 @@ use yii\widgets\Pjax;
 /** @var yii\data\ActiveDataProvider $dataProvider */
 /** @var app\modules\account\models\UpdateUserForm $model */
 /** @var array $themes */
+/** @var array $statuses */
 /** @var array $stylesStatuses */
 
 $this->title = 'Личный кабинет';
@@ -23,6 +24,7 @@ $this->registerJsFile('js/updateInfoUser.js', ['depends' => YiiAsset::class]);
 $this->registerJsFile('js/updatePasswordUser.js', ['depends' => YiiAsset::class]);
 $this->registerJsFile('js/searchPosts.js', ['depends' => YiiAsset::class]);
 $this->registerJsFile('js/deletePostPjax.js', ['depends' => YiiAsset::class]);
+$this->registerJsFile('js/accountChangeStatusPost.js', ['depends' => YiiAsset::class]);
 
 ?>
 <div class="account-index">
@@ -53,6 +55,8 @@ $this->registerJsFile('js/deletePostPjax.js', ['depends' => YiiAsset::class]);
 
     <h4 class="my-3">Мои посты</h4>
 
+    <?= Alert::widget(); ?>
+
     <div class="cnt-search d-flex flex-wrap gap-4 justify-content-between align-items-end mb-4 mt-4">
         <div class="cnt-sorts">
             <p>Сортировка</p>
@@ -60,8 +64,12 @@ $this->registerJsFile('js/deletePostPjax.js', ['depends' => YiiAsset::class]);
                 <?= $dataProvider->sort->link('created_at', ['label' => 'Дата и время создания', 'class' => 'btn btn-outline-secondary'])?>
             </div>
         </div>
-        <div class="cnt-filter col-12 col-lg-8 col-xl-6 d-flex flex-wrap gap-4 align-items-end">
-            <?php echo $this->render('_search', ['model' => $searchModel, 'themes' => $themes]); ?>
+        <div class="cnt-filter col-12 col-lg-8 d-flex flex-wrap gap-4 align-items-end">
+            <?php echo $this->render('_search', [
+                'model' => $searchModel, 
+                'themes' => $themes,
+                'statuses' => $statuses
+            ]); ?>
             <div>
                 <?= Html::a('Сброс', ['index'], ['class' => 'btn btn-outline-secondary btn-reset', 'data' => ['pjax' => 0]])?>
             </div>

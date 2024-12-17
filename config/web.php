@@ -82,7 +82,7 @@ $config = [
         ],
         'panel-admin' => [
             'class' => 'app\modules\admin\Module',
-            'defaultRoute' => 'post'
+            'defaultRoute' => 'admin'
         ],
     ],
     'params' => $params,

@@ -1,6 +1,7 @@
 <?php
 
 use app\models\Reactions;
+use app\widgets\Alert;
 use yii\helpers\Html;
 use yii\web\YiiAsset;
 
@@ -10,6 +11,7 @@ use yii\web\YiiAsset;
 /** @var yii\data\ActiveDataProvider $dataProviderComments */
 /** @var bool $deletePost */
 /** @var bool $updatePost */
+/** @var array $stylesStatuses */
 
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Личный кабинет', 'url' => ['/account']];
@@ -20,10 +22,14 @@ $this->registerJsFile('js/deletePost.js', ['depends' => YiiAsset::class]);
 
 ?>
 <div class="posts-view">
+    <?= Alert::widget(); ?>
     <?= Html::a('Вернуться назад', ['/account'], ['class' => 'btn btn-outline-info my-3']); ?>
     <div class="post">
         <div class="post-header">
-            <h3 class="mb-1"><?= Html::encode($this->title) ?></h3>
+            <div class="row g-0 gap-2 row-gap-0 align-items-center mb-1">
+                <h3 class="mb-1 col-auto"><?= Html::encode($this->title) ?></h3>
+                <h5 class="m-0 col-auto"><span class="badge col-auto <?= $stylesStatuses[$model->status]; ?>"><?= Html::encode($model->status); ?></span></h5>
+            </div>
 
             <?php if ($model->pathFile): ?>
                 <img src="/<?= $model->pathFile ?>" class="post-img rounded mb-2 mt-3 card-img-top object-fit-cover" alt="Изображение поста">

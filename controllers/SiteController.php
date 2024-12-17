@@ -75,6 +75,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        Yii::$app->user->setReturnUrl(['/']);
         $posts = Posts::getLastPosts(10);
 
         return $this->render('index', [

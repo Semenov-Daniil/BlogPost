@@ -16,25 +16,16 @@ class m241122_143631_create_permission_update_post extends Migration
     {
         $auth = Yii::$app->authManager;
 
-        $updatePost = $auth->createPermission('updatePost');
-        $updatePost->description = 'Update post';
-        $auth->add($updatePost);
-
-        $admin = $auth->getRole('admin');
-        $auth->addChild($admin, $updatePost);
-
         $rule = new UpdateOwnPostRule();
         $auth->add($rule);
 
-        $updateOwnPost = $auth->createPermission('updateOwnPost');
-        $updateOwnPost->description = 'Update own post';
-        $updateOwnPost->ruleName = $rule->name;
-        $auth->add($updateOwnPost);
-
-        $auth->addChild($updateOwnPost, $updatePost);
+        $updatePost = $auth->createPermission('updatePost');
+        $updatePost->description = 'Update post';
+        $updatePost->ruleName = $rule->name;
+        $auth->add($updatePost);
 
         $author = $auth->getRole('author');
-        $auth->addChild($author, $updateOwnPost);
+        $auth->addChild($author, $updatePost);
     }
 
     /**

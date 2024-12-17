@@ -58,10 +58,11 @@ class PostsSearch extends Posts
                 'updated_at',
                 'path_image as pathFile',
             ])
-            ->joinWith('users', false)
-            ->joinWith('statuses', false)
-            ->joinWith('themes', false)
-            ->joinWith('postImage', false)
+            ->joinWith('user', false)
+            ->joinWith('status', false)
+            ->joinWith('theme', false)
+            ->joinWith('image', false)
+            ->where(['<>', Statuses::tableName() . '.title', 'Редактирование'])
         ;
 
         $dataProvider = new ActiveDataProvider([
@@ -99,5 +100,15 @@ class PostsSearch extends Posts
             ->andFilterWhere(['like', 'text', $this->text]);
 
         return $dataProvider;
+    }
+
+    public static function getStatuses()
+    {
+        return Statuses::find()
+            ->select('title')
+            ->where(['<>', 'title', 'Редактирование'])
+            ->indexBy('id')
+            ->column()
+        ;
     }
 }

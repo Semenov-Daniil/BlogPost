@@ -23,7 +23,7 @@ use yii\widgets\Pjax;
             'id' => "block-user-form-$model->users_id",
             'fieldConfig' => [
                 'template' => "{label}\n{input}\n{error}",
-                'labelOptions' => ['class' => 'col-lg-7 col-form-label mr-lg-3'],
+                'labelOptions' => ['class' => 'col-lg-7 col-form-label mr-lg-3 pt-0'],
                 'inputOptions' => ['class' => 'form-control'],
                 'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
             ],
@@ -48,9 +48,9 @@ use yii\widgets\Pjax;
 
         <?= $form->field($model, 'blocked_comment')->textarea(['rows' => 6]) ?>
 
-        <div class="form-group">
-            <?= Html::submitButton('Заблокировать', ['class' => 'btn btn-success']) ?>
-            <?= Html::button('Скрыть', ['class' => 'btn btn-primary btn-hide-collapse', 'data' => ['id' => $model->users_id]]) ?>
+        <div class="d-flex flex-wrap gap-3">
+            <?= Html::submitButton('Заблокировать', ['class' => 'btn btn-outline-danger btn-blocked']) ?>
+            <?= Html::button('Скрыть', ['class' => 'btn btn-outline-primary btn-hide-collapse', 'data' => ['id' => $model->users_id]]) ?>
         </div>
 
         <?php ActiveForm::end(); ?>

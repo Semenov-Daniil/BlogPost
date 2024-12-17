@@ -1,19 +1,20 @@
 $(() => {
 
+    const hideAlert = function() {
+        Array.from( $(".alert[role='alert']")).forEach(element => {
+            setTimeout(() => {
+                $(element).fadeOut("slow");
+            }, 5000); 
+        });
+    }
+
     $(document).on('pjax:end', () => { 
-        setTimeout(() => {
-            $(".alert[role='alert']").fadeOut("slow");
-        }, 3000);
+        hideAlert();
     });
 
     $(document).on('ajaxComplete', () => {
-        setTimeout(() => {
-            $(".alert[role='alert']").fadeOut("slow");
-        }, 3000);
+        hideAlert();
     });
 
-    setTimeout(() => {
-        $(".alert[role='alert']").fadeOut("slow");
-    }, 3000);
-
+    hideAlert();
 });

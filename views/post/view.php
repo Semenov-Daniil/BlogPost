@@ -25,12 +25,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $this->registerJsFile('js/deletePost.js', ['depends' => YiiAsset::class]);
 $this->registerJsFile('js/reactionPost.js', ['depends' => YiiAsset::class]);
-$this->registerJsFile('js/answerComment.js', ['depends' => YiiAsset::class]);
 
 ?>
 <div class="posts-view">
 
-    <?= Html::a('Вернуться назад', ['index'], ['class' => 'btn btn-outline-info my-3']); ?>
+    <?= Html::a('Вернуться назад', Yii::$app->user->returnUrl, ['class' => 'btn btn-outline-info my-3']); ?>
 
     <div class="post">
         <div class="post-header">

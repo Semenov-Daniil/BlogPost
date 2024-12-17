@@ -163,7 +163,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function getPosts()
     {
         return $this->hasMany(Posts::class, ['users_id' => 'id'])
-            ->with('postImage');
+            ->with('image');
     }
 
     /**
@@ -297,8 +297,8 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function deletePost()
     {
         foreach ($this->posts as $post) {
-            if ($post?->postImage) {
-                unlink($post->postImage->path_image);
+            if ($post?->image) {
+                unlink($post->image->path_image);
             }
 
             $post->delete();

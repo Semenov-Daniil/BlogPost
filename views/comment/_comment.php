@@ -9,7 +9,7 @@ use yii\widgets\ListView;
 
 /** @var yii\web\View $this */
 /** @var app\models\Comments $model */
-/** @var int $postId */
+/** @var int|null $postId */
 /** @var bool $createAnswer */
 /** @var bool $deleteComment */
 
@@ -30,7 +30,7 @@ use yii\widgets\ListView;
                     <?php endif; ?>
 
                     <?php if ($deleteComment): ?>
-                        <?= Html::a('Удалить', ['/post/delete'], ['class' => 'btn btn-outline-danger btn-delete-comment ms-auto', 'data' => ['pjax' => 0]]); ?>
+                        <?= Html::a('Удалить', ['/comment/delete', 'id' => $model->id], ['class' => 'btn btn-outline-danger btn-sm btn-delete-comment ms-auto', 'data' => ['pjax' => 0]]); ?>
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
@@ -50,7 +50,7 @@ use yii\widgets\ListView;
                 'itemView' => '_comment',
                 'viewParams' => [
                     'createAnswer' => false,
-                    'deleteComment' => Yii::$app->user->can('deleteComment'),
+                    'deleteComment' => $deleteComment,
                     'postId' => $postId,
                 ],
             ]) ?>

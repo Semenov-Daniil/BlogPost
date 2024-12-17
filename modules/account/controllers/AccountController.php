@@ -43,7 +43,7 @@ class AccountController extends Controller
      */
     public function actionIndex()
     {
-        Yii::$app->user->setReturnUrl(['account/index']);
+        Yii::$app->user->setReturnUrl(['/account/index']);
 
         $searchModel = new PostsSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
@@ -55,6 +55,7 @@ class AccountController extends Controller
             'dataProvider' => $dataProvider,
             'model' => $model,
             'themes' => Themes::getThemes(),
+            'statuses' => Statuses::getStatuses(),
             'stylesStatuses' => Statuses::getStylesStatus(),
         ]);
     }
