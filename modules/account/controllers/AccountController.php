@@ -81,13 +81,10 @@ class AccountController extends Controller
                 'model' => $model
             ]);
         }
-
-        return $this->redirect('index');
     }
     
     public function actionUpdateInfo()
     {
-        
         if ($this->request->isAjax) {
             $model = new UpdateUserForm(['scenario' => UpdateUserForm::SCENARIO_UPDATE_INFO]);
             $model->attributes = Users::findOne(['id' => Yii::$app->user->id])->toArray();
@@ -104,8 +101,6 @@ class AccountController extends Controller
                 'model' => $model,
             ]);
         }
-
-        return $this->redirect('index');
     }
 
     public function actionChangePassword()
@@ -124,7 +119,5 @@ class AccountController extends Controller
                 'model' => $model,
             ]);
         }
-
-        return $this->redirect('index');
     }
 }

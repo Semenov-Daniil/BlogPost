@@ -36,7 +36,7 @@ use yii\widgets\Pjax;
 
         <?= $form->field($model, 'unblocked_comment')->textarea(['rows' => 6]) ?>
 
-        <div class="form-group">
+        <div class="d-flex flex-wrap gap-3">
             <?= Html::submitButton('Разблокировать', ['class' => 'btn btn-success']) ?>
             <?= Html::button('Скрыть', ['class' => 'btn btn-primary btn-hide-collapse', 'data' => ['id' => $model->id]]) ?>
         </div>

@@ -11,7 +11,7 @@ use yii\bootstrap5\Modal;
 ?>
 
 <div class="account-user my-4 row g-0 gap-4">
-    <div class="user-avatar col-md-3 col-12">
+    <div class="user-avatar col-12 col-sm-6 col-md-3 d-flex flex-column gap-2">
         <?= Html::img('/' . ($model?->avatar ? $model->avatar->url : Yii::getAlias('@defaultAvatar')), ['class' => 'avatar img-thumbnail object-fit-cover', 'alt' => 'Аватарка']); ?>
     </div>
     <div class="card col-md col-12">

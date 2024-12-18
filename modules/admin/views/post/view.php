@@ -15,9 +15,10 @@ $this->params['breadcrumbs'][] = ['label' => 'Панель администра�
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 
+$this->registerJsFile('js/deletePost.js', ['depends' => YiiAsset::class]);
+
 ?>
 <div class="posts-view">
-    <?= Alert::widget(); ?>
     <?= Html::a('Вернуться назад', ['/panel-admin'], ['class' => 'btn btn-outline-info my-3']); ?>
     <div class="post">
         <div class="post-header">
@@ -34,5 +35,12 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="post-body mt-4">
             <p class="card-text h5"><?= nl2br(Html::encode($model->text)); ?></p>
         </div>
+        <div class="post-footer mt-4">
+            <div class="post-action d-flex gap-2 flex-wrap mt-4">
+                <?= Html::a('Удалить', ['/post/delete', 'id' => $model->id], ['class' => 'btn btn-outline-danger btn-delete', 'data' => ['title' => Html::encode($model->title)]]); ?>
+            </div>
+        </div>
     </div>
 </div>
+
+<?= $this->render('@app/views/post/_modal-delete'); ?>

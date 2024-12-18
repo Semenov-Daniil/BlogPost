@@ -33,7 +33,7 @@ class Module extends \yii\base\Module
                         ],
                     ],
                     'denyCallback' => function ($rule, $action) {
-                        return Yii::$app->user->isGuest ? $this->redirect('/site/login') : $this->redirect('/');
+                        return Yii::$app->user->isGuest ? $this->response->redirect(['/site/login']) : $this->response->redirect(['/']);
                     }
                 ],
             ]

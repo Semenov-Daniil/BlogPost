@@ -210,6 +210,8 @@ class PostController extends Controller
                 $model->uploadFile = UploadedFile::getInstance($model, 'uploadFile');
 
                 if ($model->updatePost()) {
+                    Yii::$app->session->setFlash('success', 'Вы обновили пост: ' . Html::encode($model->title) . '.');
+                    Yii::$app->session->setFlash('info', 'Чтобы опубликовать пост, отправьте его на модерацию.');
                     return $this->redirect(['/account/post/view', 'id' => $model->id]);
                 }
             }
@@ -233,7 +235,7 @@ class PostController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->deletePost();
-
+        Yii::$app->session->setFlash('info', 'Вы удалили пост.');
         if (!$this->request->post('pjax')) {
             return $this->goBack();
         }
@@ -252,6 +254,6 @@ class PostController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException('Пост не найден.');
     }
 }

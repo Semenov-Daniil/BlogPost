@@ -56,7 +56,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
                     '-',
                     ['label' => 'Выход', 'url' => ['/site/logout'], 'linkOptions' => ['class' => 'btn btn-dark px-3', 'data' => ['method' => 'post']]],
                 ],
-                'linkOptions' => ['class' => 'px-3 d-flex gap-1 align-items-center user-item'],
+                'linkOptions' => ['class' => 'ps-1 pe-3 d-flex gap-2 align-items-center user-item'],
                 'encode' => false,
                 'options' => ['class' => 'test']
             ]
@@ -78,8 +78,8 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         <?php endif ?>
         <?php Pjax::begin([
             'id' => 'pjax-alert',
-            'enablePushState' => false,
-        ]); ?>
+            'enablePushState' => false
+        ])?>
             <?= $this->render('@app/views/site/_alert'); ?>
         <?php Pjax::end(); ?>
         <?= $content ?>

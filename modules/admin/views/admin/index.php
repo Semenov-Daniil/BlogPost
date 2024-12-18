@@ -18,8 +18,9 @@ use yii\widgets\Pjax;
 $this->title = 'Панель администратора';
 $this->params['breadcrumbs'][] = $this->title;
 
-$this->registerJsFile('/js/searchPosts.js', ['depends' => YiiAsset::class]);
-$this->registerJsFile('/js/deletePostPjax.js', ['depends' => YiiAsset::class]);
+$this->registerJsFile('js/admin.js', ['depends' => YiiAsset::class]);
+$this->registerJsFile('js/searchPosts.js', ['depends' => YiiAsset::class]);
+$this->registerJsFile('js/deletePostPjax.js', ['depends' => YiiAsset::class]);
 
 ?>
 <div class="admin-index">
@@ -37,8 +38,6 @@ $this->registerJsFile('/js/deletePostPjax.js', ['depends' => YiiAsset::class]);
     ]); ?>
 
     <h4>Все посты</h4>
-
-    <?= Alert::widget(); ?>
     
     <div class="cnt-search d-flex flex-wrap gap-4 justify-content-between align-items-end my-3">
         <div class="cnt-sorts">

@@ -137,6 +137,10 @@ class UsersBlocks extends ActiveRecord
     {
         if ($this->validate()) {
 
+            $user = Users::findOne(['id' => $this->users_id]);
+            $user->auth_key = Yii::$app->security->generateRandomString();
+            $user->save(false);
+
             $this->users_id = $userId;
             $this->unblocked_at = "$this->date $this->time";
 
@@ -151,6 +155,8 @@ class UsersBlocks extends ActiveRecord
         if ($this->validate()) {
 
             $user = Users::findOne(['id' => $this->users_id]);
+            $user->auth_key = Yii::$app->security->generateRandomString();
+            $user->save(false);
 
             $user->deletePost();
 

@@ -74,7 +74,7 @@ $(() => {
         
                             $.pjax.reload('#pjax-admin-users');
                         } else {
-                            $(`#pjax-block-${form.data('id')}`).html(data);
+                            collapse.find('.card-body').html(data);
                         }
                     }
                 });
@@ -93,7 +93,8 @@ $(() => {
     
                         $.pjax.reload('#pjax-admin-users');
                     } else {
-                        $(`#pjax-block-${form.data('id')}`).html(data);
+                        collapse.find('.card-body').html(data);
+                        collapse.find('.btn-blocked').html('Заблокировать на время');
                     }
                 }
             });

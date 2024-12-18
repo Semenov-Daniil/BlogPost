@@ -11,6 +11,7 @@ use app\models\LoginForm;
 use app\models\Posts;
 use app\models\RegisterForm;
 use app\models\UsersBlocks;
+use app\widgets\Alert;
 use yii\helpers\VarDumper;
 use yii\web\UploadedFile;
 

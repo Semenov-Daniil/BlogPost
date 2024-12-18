@@ -6,6 +6,7 @@ use app\models\Users;
 use app\models\UsersBlocks;
 use app\modules\admin\models\BlockForm;
 use app\modules\admin\models\UsersSearch;
+use Yii;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -61,6 +62,7 @@ class UserController extends Controller
 
             if ($this->request->isPost) {
                 if ($model->load($this->request->post()) && $model->tempBlockUser($id)) {
+                    Yii::$app->session->setFlash('info', "Вы временно заблокировали пользователя #$id.");
                     $this->response->format = Response::FORMAT_JSON;
                     return [
                         'success' => true,
@@ -82,6 +84,7 @@ class UserController extends Controller
 
             if ($this->request->isPost) {
                 if ($model->load($this->request->post()) && $model->permBlockUser($id)) {
+                    Yii::$app->session->setFlash('info', "Вы навсегда заблокировали пользователя #$id.");
                     $this->response->format = Response::FORMAT_JSON;
                     return [
                         'success' => true,
@@ -104,6 +107,7 @@ class UserController extends Controller
 
             if ($this->request->isPost) {
                 if ($model->load($this->request->post()) && $model->unblockUser()) {
+                    Yii::$app->session->setFlash('info', "Вы разблокировали пользователя #$id.");
                     $this->response->format = Response::FORMAT_JSON;
                     return [
                         'success' => true,

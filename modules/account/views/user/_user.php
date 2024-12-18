@@ -10,8 +10,8 @@ use yii\bootstrap5\Modal;
 
 ?>
 
-<div class="account-user my-5 row g-0 gap-4">
-    <div class="user-avatar col-6 col-md-3 d-flex flex-column gap-2">
+<div class="account-user my-3 row g-0 gap-4">
+    <div class="user-avatar col-12 col-sm-6 col-md-3 d-flex flex-column gap-2">
         <?= Html::img('/' . ($model?->avatar ? $model->avatar->url : Yii::getAlias('@defaultAvatar')), ['class' => 'avatar img-thumbnail object-fit-cover', 'alt' => 'Аватарка']); ?>
         <?= Html::a('Изменить аватар', ['update-avatar'], ['class' => 'btn btn-outline-primary btn-update-avatar', 'data' => ['pjax' => 0]]); ?>
     </div>

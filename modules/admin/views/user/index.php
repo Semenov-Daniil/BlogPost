@@ -17,6 +17,7 @@ $this->title = 'Список пользователей';
 $this->params['breadcrumbs'][] = ['label' => 'Панель администратора', 'url' => ['/panel-admin']];
 $this->params['breadcrumbs'][] = $this->title;
 
+$this->registerJsFile('/js/admin.js', ['depends' => YiiAsset::class]);
 $this->registerJsFile('/js/searchUsers.js', ['depends' => YiiAsset::class]);
 $this->registerJsFile('/js/blockUsers.js', ['depends' => YiiAsset::class]);
 $this->registerJsFile('/js/unblockUsers.js', ['depends' => YiiAsset::class]);
@@ -32,6 +33,7 @@ $this->registerJsFile('/js/unblockUsers.js', ['depends' => YiiAsset::class]);
 
     <?php Pjax::begin([
         'id' => 'pjax-admin-users',
+        'enablePushState' => false,
         'timeout' => 10000,
         'formSelector' => false
     ]); ?>

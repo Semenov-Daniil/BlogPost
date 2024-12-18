@@ -19,12 +19,13 @@ use yii\widgets\Pjax;
 $this->title = 'Личный кабинет';
 $this->params['breadcrumbs'][] = $this->title;
 
+$this->registerJsFile('js/account.js', ['depends' => YiiAsset::class]);
 $this->registerJsFile('js/updateAvatar.js', ['depends' => YiiAsset::class]);
 $this->registerJsFile('js/updateInfoUser.js', ['depends' => YiiAsset::class]);
 $this->registerJsFile('js/updatePasswordUser.js', ['depends' => YiiAsset::class]);
 $this->registerJsFile('js/searchPosts.js', ['depends' => YiiAsset::class]);
 $this->registerJsFile('js/deletePostPjax.js', ['depends' => YiiAsset::class]);
-$this->registerJsFile('js/accountChangeStatusPost.js', ['depends' => YiiAsset::class]);
+$this->registerJsFile('js/changeStatusPost.js', ['depends' => YiiAsset::class]);
 
 ?>
 <div class="account-index">
@@ -53,45 +54,43 @@ $this->registerJsFile('js/accountChangeStatusPost.js', ['depends' => YiiAsset::c
         'timeout' => 10000,
     ]); ?>
 
-    <h4 class="my-3">Мои посты</h4>
+        <h4 class="my-3">Мои посты</h4>
 
-    <?= Alert::widget(); ?>
-
-    <div class="cnt-search d-flex flex-wrap gap-4 justify-content-between align-items-end mb-4 mt-4">
-        <div class="cnt-sorts">
-            <p>Сортировка</p>
-            <div class="sort-links d-flex flex-wrap gap-4">
-                <?= $dataProvider->sort->link('created_at', ['label' => 'Дата и время создания', 'class' => 'btn btn-outline-secondary'])?>
+        <div class="cnt-search d-flex flex-wrap gap-4 justify-content-between align-items-end mb-4 mt-4">
+            <div class="cnt-sorts">
+                <p>Сортировка</p>
+                <div class="sort-links d-flex flex-wrap gap-4">
+                    <?= $dataProvider->sort->link('created_at', ['label' => 'Дата и время создания', 'class' => 'btn btn-outline-secondary'])?>
+                </div>
+            </div>
+            <div class="cnt-filter col-12 col-lg-8 d-flex flex-wrap gap-4 align-items-end">
+                <?php echo $this->render('_search', [
+                    'model' => $searchModel, 
+                    'themes' => $themes,
+                    'statuses' => $statuses
+                ]); ?>
+                <div>
+                    <?= Html::a('Сброс', ['index'], ['class' => 'btn btn-outline-secondary btn-reset', 'data' => ['pjax' => 0]])?>
+                </div>
             </div>
         </div>
-        <div class="cnt-filter col-12 col-lg-8 d-flex flex-wrap gap-4 align-items-end">
-            <?php echo $this->render('_search', [
-                'model' => $searchModel, 
-                'themes' => $themes,
-                'statuses' => $statuses
-            ]); ?>
-            <div>
-                <?= Html::a('Сброс', ['index'], ['class' => 'btn btn-outline-secondary btn-reset', 'data' => ['pjax' => 0]])?>
-            </div>
-        </div>
-    </div>
 
-    <?= ListView::widget([
-        'dataProvider' => $dataProvider,
-        'itemOptions' => ['class' => 'item mt-3'],
-        'itemView' => '_post',
-        'layout' => "
-            <div>{pager}</div>
-            <div class='mt-3'>{items}</div>
-            <div class='mt-3'>{pager}</div>
-        ",
-        'pager' => [
-            'class' => LinkPager::class,
-        ],
-        'viewParams' => [
-            'stylesStatuses' => $stylesStatuses
-        ]
-    ]) ?>
+        <?= ListView::widget([
+            'dataProvider' => $dataProvider,
+            'itemOptions' => ['class' => 'item mt-3'],
+            'itemView' => '_post',
+            'layout' => "
+                <div>{pager}</div>
+                <div class='mt-3'>{items}</div>
+                <div class='mt-3'>{pager}</div>
+            ",
+            'pager' => [
+                'class' => LinkPager::class,
+            ],
+            'viewParams' => [
+                'stylesStatuses' => $stylesStatuses
+            ]
+        ]) ?>
 
     <?php Pjax::end(); ?>
 

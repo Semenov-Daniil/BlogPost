@@ -30,13 +30,4 @@ $(() => {
     
         return false;
     });
-
-    $('#pjax-user').on('pjax:end', function(event) {
-        $.pjax.reload({
-            container: '#pjax-alert',
-            url: '/site/alert',
-            push: false,
-            replace: false,
-        });
-    });
 })
