@@ -87,7 +87,7 @@ class Posts extends \yii\db\ActiveRecord
             [['title', 'preview', 'theme'], 'string', 'max' => 255],
             [['text'], 'string'],
             [['check'], 'boolean'],
-            [['uploadFile'], 'image'],
+            [['uploadFile'], 'image', 'extensions' => 'png, jpg, jpeg',],
             [['statuses_id'], 'exist', 'skipOnError' => true, 'targetClass' => Statuses::class, 'targetAttribute' => ['statuses_id' => 'id']],
             [['themes_id'], 'exist', 'skipOnError' => true, 'targetClass' => Themes::class, 'targetAttribute' => ['themes_id' => 'id']],
             [['users_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['users_id' => 'id']],

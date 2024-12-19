@@ -43,6 +43,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($model, 'email')->textInput() ?>
                 <?= $form->field($model, 'phone')->widget(\yii\widgets\MaskedInput::class, [
                     'mask' => '+7(999)-999-99-99',
+                    'options' => [
+                        'type' => 'tel'
+                    ],
                 ]) ?>   
                 <?= $form->field($model, 'login')->textInput() ?>
                 <?= $form->field($model, 'password')->passwordInput() ?>

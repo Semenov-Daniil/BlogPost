@@ -35,7 +35,7 @@ class RegisterForm extends Model
             [['name', 'surname', 'patronymic', 'login', 'email', 'password_repeat'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 20],
             [['password'], 'string', 'max' => 255, 'min' => 6],
-            ['uploadFile', 'image'],
+            ['uploadFile', 'image', 'extensions' => 'png, jpg, jpeg',],
             [['login'], 'unique', 'targetClass' => Users::class],
             [['email'], 'unique', 'targetClass' => Users::class],
             [['name', 'surname', 'patronymic'], 'match', 'pattern' => '/^[а-яё\s\-]+$/ui', 'message' => 'Только кириллица, пробел, тире.'],
